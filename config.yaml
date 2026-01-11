@@ -1,0 +1,143 @@
+# 遊戲配置
+game:
+  window_title: "ブループロトコル：スターレゾナンス"  # 修改為實際遊戲視窗標題
+  
+# 釣魚配置
+fishing:
+  # 抛竿操作类型：key（鍵盘）或 click（滑鼠點擊）
+  cast_type: "click"  # 可選: "key" 或 "click"
+  # 抛竿按鍵（当 cast_type 為 key 時使用）
+  cast_key: "e"
+  # 抛竿點擊位置（当 cast_type 為 click 時使用，相對於視窗的比例 0-1）
+  cast_click_pos:
+    x: 0.5
+    y: 0.5
+  # 收竿操作类型
+  reel_type: "click"  # 可選: "key" 或 "click"
+  # 收竿按鍵
+  reel_key: "e"
+  # 收竿點擊位置
+  reel_click_pos:
+    x: 0.5
+    y: 0.5
+  # 等待咬勾超時時間（秒）
+  bite_timeout: 30
+  # 抛竿後等待時間（秒）
+  cast_delay: 2
+  # 收竿後等待時間（秒）
+  reel_delay: 0.5
+  # 魚追踪配置
+  fish_tracking:
+    enabled: true  # 是否启用魚追踪
+    left_key: "a"  # 向左移動鍵
+    right_key: "d"  # 向右移動鍵
+    center_threshold: 0.13  # 中心閾值（相對於視窗寬度）
+    key_press_duration: 0.15  # 按鍵持續時間（秒）
+  # 拉力計階段配置（收竿後的QTE/追踪階段）
+  tension_phase:
+    duration: 60  # 最大持續時間（秒）
+    check_interval: 0.1  # 檢測間格（秒）
+    release_hold_duration: 1.0  # 釋放後保持釋放狀態的時間（秒）
+    # 紅色檢測方式: 'color' 或 'template'
+    # 'color' - 使用紅色比例檢測
+    # 'template' - 使用模板匹配檢測紅色張力圖片
+    red_detection_mode: "template"  # 可選: "color" 或 "template"
+    red_threshold: 0.17  # 紅色比例閾值（0.0-1.0），仅在 red_detection_mode 為 color 時使用
+    red_template: "templates/red_tension.png"  # 紅色張力模板圖片路徑，仅在 red_detection_mode 為 template 時使用
+    red_template_threshold: 0.5  # 模板匹配閾值，仅在 red_detection_mode 為 template 時使用
+
+# 圖像識別配置
+detection:
+  # 檢測區域（相對於遊戲視窗，比例 0-1）
+  region:
+    x: 0.4
+    y: 0.3
+    width: 0.2
+    height: 0.3
+  # 識別閾值
+  threshold: 0.8
+  # 檢測間格（秒）
+  check_interval: 0.1
+  # 白色水花檢測配置
+  fish_splash:
+    # 檢測區域（追踪魚時使用）
+    region:
+      x: 0.1
+      y: 0.3
+      width: 0.8
+      height: 0.2
+    # 白色閾值（HSV色彩空間，V值）
+    white_threshold: 210  # 0-255，越高越接近純白
+    # 最小面積（像素）
+    min_area: 3  # 過濾小噪点
+  # 拉力計檢測配置
+  tension_bar:
+    # 檢測區域（相對於遊戲視窗，比例 0-1）
+    region:
+      x: 0.33
+      y: 0.8
+      width: 0.34
+      height: 0.06
+    # 模板圖片路徑（需要截取拉力計的圖片）
+    template: "templates/tension_bar.png"
+    # 或使用顏色檢測
+    # color: [255, 100, 50]  # BGR 格式
+  # 紅色張力檢測配置（用於模板匹配模式）
+  red_tension:
+    # 檢測區域（相對於遊戲視窗，比例 0-1）
+    region:
+      # x: 0.45
+      # y: 0.84
+      # width: 0.23
+      # height: 0.05
+      x: 0.4
+      y: 0.8
+      width: 0.3
+      height: 0.1
+  # "再来一次"按鈕檢測配置（釣魚完成後點擊繼續）
+  retry_button:
+    template: "templates/retry_button.png"  # 按鈕的模板圖片
+    wait_time: 2  # 等待按鈕出现的時間（秒）
+    search_timeout: 5  # 搜索按鈕的超時時間（秒）
+    response_delay: 1  # 點擊後等待界面響應的時間（秒）
+    # 搜索區域（可選，預設為整個視窗）
+    region:
+      x: 0.7
+      y: 0.7
+      width: 0.7
+      height: 0.3
+  # 魚竿耐久度耗盡檢測配置
+  rod_durability:
+    template: "templates/rod_depleted.png"  # 耐久度耗盡提示的模板圖片
+    wait_time: 0.2  # 等待提示出现的時間（秒）
+    search_timeout: 1  # 搜索提示的超時時間（秒）
+    # 搜索區域（可選，預設為整個視窗）
+    region:
+      x: 0.8
+      y: 0.8
+      width: 0.2
+      height: 0.2
+    # 更換魚竿的第一次點擊位置（相對於視窗的比例 0-1）
+    first_click_pos:
+      x: 0.87
+      y: 0.93
+    # 更換魚竿的第二次點擊位置（相對於視窗的比例 0-1）
+    second_click_pos:
+      x: 0.89
+      y: 0.57
+    click_delay: 0.5  # 两次點擊之間的延遲（秒）
+    response_delay: 0.5  # 點擊後等待界面響應的時間（秒）
+
+# 反檢測配置
+anti_detection:
+  # 隨機延遲範圍（秒）
+  random_delay_min: 0.1
+  random_delay_max: 0.5
+  # 每次釣魚後休息時間範圍（秒）
+  rest_time_min: 0
+  rest_time_max: 0.1
+
+# 日誌配置
+logging:
+  level: "DEBUG"  # DEBUG, INFO, WARNING, ERROR
+  file: "fishing_bot.log"
