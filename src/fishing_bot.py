@@ -59,6 +59,10 @@ class FishingBot:
         """開始釣魚循環"""
         self.running = True
         self.logger.info("開始自動釣魚...")
+
+        # 確保視窗啟動
+        self.window_manager.activate_window()
+        time.sleep(0.5)
         
         while self.running:
             try:
@@ -118,10 +122,6 @@ class FishingBot:
         """拋竿"""
         self.state = FishingState.CASTING
         self.logger.debug("開始拋竿")
-        
-        # 確保視窗啟動
-        self.window_manager.activate_window()
-        time.sleep(0.5)
         
         # 執行拋竿操作
         cast_type = self.config.get('fishing.cast_type', 'key')
@@ -288,7 +288,7 @@ class FishingBot:
         tracking_enabled = self.config.get('fishing.fish_tracking.enabled', True)
         red_detection_mode = self.config.get('fishing.tension_phase.red_detection_mode', 'color')
         red_threshold = self.config.get('fishing.tension_phase.red_threshold', 0.3)  # 紅色比例閾值
-        release_hold_duration = self.config.get('fishing.tension_phase.release_hold_duration', 1.0)
+        release_hold_duration = self.config.get('fishing.tension_phase.release_hold_duration', 0.5)
         
         self.logger.info(f"紅色張力檢測模式: {red_detection_mode}")
         
@@ -544,7 +544,7 @@ class FishingBot:
         
         # 計算水花相對於視窗中心的位置
         splash_x, splash_y = splash_pos
-        window_center_x = x + w / 2
+        window_center_x = x + w / 2 - 40  # 調整中心點偏移
         
         # 取得中心閾值（相對於視窗寬度）
         center_threshold = self.config.get('fishing.fish_tracking.center_threshold', 0.1)
@@ -646,7 +646,7 @@ class FishingBot:
         # 取得配置
         rod_config = self.config.get('detection.rod_durability', {})
         wait_time = rod_config.get('wait_time', 0.2)  # 等待提示出現的時間
-        search_timeout = rod_config.get('search_timeout', 1)  # 搜尋逾時時間
+        search_timeout = rod_config.get('search_timeout', 0.9)  # 搜尋逾時時間
         template_path = rod_config.get('template', 'templates/rod_depleted.png')
         click_delay = rod_config.get('click_delay', 0.5)  # 兩次點擊之間的延遲
         response_delay = rod_config.get('response_delay', 1)  # 點擊後等待時間
@@ -681,7 +681,7 @@ class FishingBot:
                 # 截取螢幕
                 screen = self.image_detector.capture_screen(region)
                 if screen is None:
-                    time.sleep(0.5)
+                    time.sleep(0.3)
                     continue
                 
                 # 查找耐久度耗盡提示
@@ -695,7 +695,7 @@ class FishingBot:
             except Exception as e:
                 self.logger.debug(f"搜尋耐久度提示失敗: {e}")
             
-            time.sleep(0.5)
+            time.sleep(0.3)
         
         if found:
             # 取得第一次點擊位置配置

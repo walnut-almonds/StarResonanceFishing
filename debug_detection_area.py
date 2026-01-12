@@ -114,7 +114,7 @@ def main():
         
         # 計算閾值邊界
         threshold_pixels = int(window.width * center_threshold)
-        center_x = window.width // 2 - 30  # 視窗中心X座標
+        center_x = window.width // 2 - 40  # 視窗中心X座標
         left_boundary = center_x - threshold_pixels
         right_boundary = center_x + threshold_pixels
         

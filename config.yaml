@@ -37,7 +37,7 @@ fishing:
   tension_phase:
     duration: 60  # 最大持續時間（秒）
     check_interval: 0.1  # 檢測間格（秒）
-    release_hold_duration: 1.0  # 釋放後保持釋放狀態的時間（秒）
+    release_hold_duration: 0.5  # 釋放後保持釋放狀態的時間（秒）
     # 紅色檢測方式: 'color' 或 'template'
     # 'color' - 使用紅色比例檢測
     # 'template' - 使用模板匹配檢測紅色張力圖片
@@ -110,7 +110,7 @@ detection:
   rod_durability:
     template: "templates/rod_depleted.png"  # 耐久度耗盡提示的模板圖片
     wait_time: 0.2  # 等待提示出现的時間（秒）
-    search_timeout: 1  # 搜索提示的超時時間（秒）
+    search_timeout: 0.9  # 搜索提示的超時時間（秒）
     # 搜索區域（可選，預設為整個視窗）
     region:
       x: 0.8
@@ -139,5 +139,5 @@ anti_detection:
 
 # 日誌配置
 logging:
-  level: "DEBUG"  # DEBUG, INFO, WARNING, ERROR
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
   file: "fishing_bot.log"
