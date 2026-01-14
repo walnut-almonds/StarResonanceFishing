@@ -30,7 +30,7 @@ jobs:
 
     - name: Build with pack.py
       run: |
-        python pack.py --clean
+        python pack.py
       env:
         PYTHONIOENCODING: utf-8
 
