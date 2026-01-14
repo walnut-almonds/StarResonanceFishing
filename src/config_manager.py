@@ -2,6 +2,7 @@
 配置管理模組
 """
 import yaml
+import sys
 from pathlib import Path
 
 
@@ -15,7 +16,20 @@ class ConfigManager:
         Args:
             config_path: 設定檔路徑
         """
-        self.config_path = Path(config_path)
+        # 處理 PyInstaller 打包後的路徑
+        if getattr(sys, 'frozen', False):
+            # 打包後，優先使用 exe 所在目錄的外部配置
+            external_path = Path(sys.executable).parent / config_path
+            if external_path.exists():
+                self.config_path = external_path
+            else:
+                # 如果外部不存在，使用打包內的配置
+                internal_path = Path(getattr(sys, '_MEIPASS', '')) / config_path
+                self.config_path = internal_path
+        else:
+            # 開發環境，從當前目錄讀取
+            self.config_path = Path.cwd() / config_path
+        
         self.config = self._load_config()
     
     def _load_config(self) -> dict:
