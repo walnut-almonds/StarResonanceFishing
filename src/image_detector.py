@@ -68,6 +68,17 @@ class ImageDetector:
                 self.logger.error(f"無法加載模板圖像: {template_path}")
                 return None
             
+            # 檢查尺寸：搜索區域必須 >= 模板圖片
+            screen_h, screen_w = screen.shape[:2]
+            template_h, template_w = template.shape[:2]
+            
+            if screen_h < template_h or screen_w < template_w:
+                self.logger.warning(
+                    f"搜索區域 ({screen_w}x{screen_h}) 小於模板 ({template_w}x{template_h})，"
+                    f"請調整遊戲窗口大小或使用更小的模板圖片"
+                )
+                return None
+            
             result = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
             min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
             

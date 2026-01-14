@@ -31,7 +31,7 @@ jobs:
     
     - name: Build with PyInstaller
       run: |
-        pyinstaller --onefile --add-data "templates;templates" --add-data "config.yaml;." --name StarResonanceFishing main.py
+        pyinstaller --onefile --uac-admin --add-data "templates;templates" --add-data "config.yaml;." --name StarResonanceFishing main.py
     
     - name: Create release package
       run: |
