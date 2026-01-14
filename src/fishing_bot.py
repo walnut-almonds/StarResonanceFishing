@@ -172,7 +172,7 @@ class FishingBot:
     
     def _detect_bite_indicator(self) -> bool:
         """
-        檢測咬鉤指示器（示範實現）
+        檢測咬鉤指示器
         
         Returns:
             是否檢測到咬鉤

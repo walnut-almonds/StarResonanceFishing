@@ -2,6 +2,15 @@
 
 基於 Python 的 スタレゾ 釣魚自動化工具
 
+## 開發方向?
+
+目前還在早期開發階段
+
+參數與檢測圖片都相當隨意，單純為了能夠在最短的時間內做出可運作的最小實現
+
+工具是在 1920x1080 解析度下開發的，沒確認過其他 16:9 環境下是不是能正常運作
+非16:9的解析度猜測大概率是有問題不運作的
+
 ## 結構
 
 ```
@@ -43,3 +52,7 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
+
+## License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.

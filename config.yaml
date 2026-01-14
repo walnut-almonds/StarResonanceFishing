@@ -42,9 +42,9 @@ fishing:
     # 'color' - 使用紅色比例檢測
     # 'template' - 使用模板匹配檢測紅色張力圖片
     red_detection_mode: "template"  # 可選: "color" 或 "template"
-    red_threshold: 0.17  # 紅色比例閾值（0.0-1.0），仅在 red_detection_mode 為 color 時使用
-    red_template: "templates/red_tension.png"  # 紅色張力模板圖片路徑，仅在 red_detection_mode 為 template 時使用
-    red_template_threshold: 0.5  # 模板匹配閾值，仅在 red_detection_mode 為 template 時使用
+    red_threshold: 0.17  # 紅色比例閾值（0.0-1.0），僅在 red_detection_mode 為 color 時使用
+    red_template: "templates/red_tension.png"  # 紅色張力模板圖片路徑，僅在 red_detection_mode 為 template 時使用
+    red_template_threshold: 0.5  # 模板匹配閾值，僅在 red_detection_mode 為 template 時使用
 
 # 圖像識別配置
 detection:
