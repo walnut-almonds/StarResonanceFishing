@@ -34,6 +34,7 @@ jobs:
     - name: Create release package
       run: |
         mkdir release
+        mkdir release\templates
         copy dist\StarResonanceFishing.exe release\
         copy templates\* release\templates\
         copy config.yaml release\
