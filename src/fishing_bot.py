@@ -9,7 +9,7 @@ from .config_manager import ConfigManager
 from .window_manager import WindowManager
 from .input_controller_winapi import WinAPIInputController
 from .image_detector import ImageDetector
-from .phases import CastingPhase, WaitingPhase, TensionPhase, CompletionPhase
+from .phases import CastingPhase, WaitingPhase, TensionPhase, CompletionPhase, PreparationPhase
 
 
 class FishingState(Enum):
@@ -47,6 +47,7 @@ class FishingBot:
         self.waiting_phase = WaitingPhase(config, self.window_manager, self.image_detector)
         self.tension_phase = TensionPhase(config, self.window_manager, self.input_controller, self.image_detector)
         self.completion_phase = CompletionPhase(config, self.window_manager, self.input_controller, self.image_detector)
+        self.preparation_phase = PreparationPhase(config, self.window_manager, self.input_controller, self.image_detector)
         
         # 釣魚狀態
         self.state = FishingState.IDLE
@@ -100,7 +101,7 @@ class FishingBot:
         """執行一次完整的釣魚流程"""
 
         # 檢查魚竿是否耐久度耗盡
-        self.completion_phase.check_and_replace_rod()
+        self.preparation_phase.check_and_replace_rod()
 
         # 1. 拋竿
         self.state = FishingState.CASTING
