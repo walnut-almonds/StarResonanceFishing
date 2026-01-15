@@ -1,0 +1,182 @@
+"""
+釣魚完成與重置階段處理
+"""
+import time
+import logging
+from ..utils import get_resource_path
+
+
+class CompletionPhase:
+    """釣魚完成與重置階段處理器"""
+    
+    def __init__(self, config, window_manager, input_controller, image_detector):
+        """
+        初始化完成階段處理器
+        
+        Args:
+            config: 配置管理器
+            window_manager: 視窗管理器
+            input_controller: 輸入控制器
+            image_detector: 圖像檢測器
+        """
+        self.config = config
+        self.window_manager = window_manager
+        self.input_controller = input_controller
+        self.image_detector = image_detector
+        self.logger = logging.getLogger("FishingBot.CompletionPhase")
+    
+    def reset_and_continue(self):
+        """重置狀態，點擊"再來一次"按鈕繼續釣魚"""
+        self.logger.debug("開始尋找'再來一次'按鈕")
+        
+        # 獲取配置
+        retry_config = self.config.get('detection.retry_button', {})
+        wait_time = retry_config.get('wait_time', 2)
+        search_timeout = retry_config.get('search_timeout', 5)
+        template_path = get_resource_path(retry_config.get('template', 'templates/retry_button.png'))
+        
+        # 等待按鈕出現
+        time.sleep(wait_time)
+        
+        # 獲取視窗信息
+        window_rect = self.window_manager.get_window_rect()
+        if not window_rect:
+            self.logger.warning("無法獲取視窗位置，跳過重置")
+            return
+        
+        x, y, w, h = window_rect
+        region_config = retry_config.get('region', {'x': 0.0, 'y': 0.0, 'width': 1.0, 'height': 1.0})
+        
+        region = (
+            int(x + w * region_config['x']),
+            int(y + h * region_config['y']),
+            int(w * region_config['width']),
+            int(h * region_config['height'])
+        )
+        
+        # 嘗試查找按鈕
+        start_time = time.time()
+        found = False
+        
+        while time.time() - start_time < search_timeout:
+            try:
+                screen = self.image_detector.capture_screen(region)
+                if screen is None:
+                    time.sleep(0.5)
+                    continue
+                
+                position = self.image_detector.find_template(screen, template_path)
+                
+                if position is not None:
+                    click_x = region[0] + position[0]
+                    click_y = region[1] + position[1]
+                    
+                    self.logger.info(f"找到'再來一次'按鈕，位置: ({click_x}, {click_y})")
+                    time.sleep(0.5)
+                    
+                    self.input_controller.click(click_x, click_y, button='left')
+                    self.logger.info("已點擊'再來一次'按鈕")
+                    found = True
+                    break
+            except Exception as e:
+                self.logger.debug(f"搜尋按鈕失敗: {e}")
+            
+            time.sleep(0.5)
+        
+        if not found:
+            self.logger.warning("未找到'再來一次'按鈕，可能需要手動操作")
+            time.sleep(1)
+        else:
+            response_delay = retry_config.get('response_delay', 1)
+            time.sleep(response_delay)
+    
+    def check_and_replace_rod(self):
+        """檢查魚竿耐久度是否耗盡，如果耗盡則點擊更換"""
+        self.logger.debug("檢查魚竿耐久度")
+        
+        # 取得配置
+        rod_config = self.config.get('detection.rod_durability', {})
+        wait_time = rod_config.get('wait_time', 0.2)
+        search_timeout = rod_config.get('search_timeout', 0.9)
+        template_path = get_resource_path(rod_config.get('template', 'templates/rod_depleted.png'))
+        click_delay = rod_config.get('click_delay', 0.5)
+        response_delay = rod_config.get('response_delay', 1)
+        
+        # 等待提示出現
+        time.sleep(wait_time)
+        
+        # 取得視窗資訊
+        window_rect = self.window_manager.get_window_rect()
+        if not window_rect:
+            self.logger.warning("無法取得視窗位置，跳過耐久度檢查")
+            return
+        
+        x, y, w, h = window_rect
+        region_config = rod_config.get('region', {'x': 0.0, 'y': 0.0, 'width': 1.0, 'height': 1.0})
+        
+        region = (
+            int(x + w * region_config['x']),
+            int(y + h * region_config['y']),
+            int(w * region_config['width']),
+            int(h * region_config['height'])
+        )
+        
+        # 嘗試查找耐久度耗盡提示
+        start_time = time.time()
+        found = False
+        
+        while time.time() - start_time < search_timeout:
+            try:
+                screen = self.image_detector.capture_screen(region)
+                if screen is None:
+                    time.sleep(0.3)
+                    continue
+                
+                position = self.image_detector.find_template(screen, template_path, 0.87)
+                if position is not None:
+                    self.logger.info("檢測到魚竿耐久度耗盡！")
+                    found = True
+                    break
+            except Exception as e:
+                self.logger.debug(f"搜尋耐久度提示失敗: {e}")
+            
+            time.sleep(0.3)
+        
+        if found:
+            # 取得點擊位置配置
+            first_click_pos = rod_config.get('first_click_pos', {'x': 0.5, 'y': 0.5})
+            first_click_x = int(x + w * first_click_pos['x'])
+            first_click_y = int(y + h * first_click_pos['y'])
+            
+            second_click_pos = rod_config.get('second_click_pos', {'x': 0.5, 'y': 0.6})
+            second_click_x = int(x + w * second_click_pos['x'])
+            second_click_y = int(y + h * second_click_pos['y'])
+            
+            self.logger.info(f"開始更換魚竿")
+            
+            try:
+                # 按下 Alt 鍵
+                self.logger.debug("按下 Alt 鍵")
+                self.input_controller.key_down('alt')
+                
+                # 第一次點擊
+                self.logger.info(f"第一次點擊位置: ({first_click_x}, {first_click_y})")
+                self.input_controller.click(first_click_x, first_click_y, button='left')
+                self.logger.debug("第一次點擊完成")
+                
+                time.sleep(click_delay)
+                
+                # 第二次點擊
+                self.logger.info(f"第二次點擊位置: ({second_click_x}, {second_click_y})")
+                self.input_controller.click(second_click_x, second_click_y, button='left')
+                self.logger.debug("第二次點擊完成")
+            finally:
+                # 確保釋放 Alt 鍵
+                self.input_controller.key_up('alt')
+                self.logger.debug("釋放 Alt 鍵")
+                self.logger.info("魚竿已更換")
+            
+            # 等待界面響應
+            time.sleep(response_delay)
+        else:
+            self.logger.debug("魚竿耐久度正常")
