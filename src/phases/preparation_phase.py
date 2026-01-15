@@ -85,7 +85,7 @@ class PreparationPhase:
             second_click_x = int(x + w * second_click_pos['x'])
             second_click_y = int(y + h * second_click_pos['y'])
             
-            self.logger.info(f"開始更換魚竿")
+            self.logger.info("開始更換魚竿")
             
             try:
                 # 按下 Alt 鍵
