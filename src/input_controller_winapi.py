@@ -6,7 +6,7 @@ import random
 import ctypes
 import logging
 from typing import Tuple
-from ctypes import windll, Structure, c_long, c_ulong, sizeof, Union, c_ushort, c_short, pointer, POINTER
+from ctypes import windll, Structure, c_long, c_ulong, sizeof, Union, c_ushort, c_short, POINTER
 
 
 # Windows API 常量

@@ -4,10 +4,7 @@
 釣魚自動化主程式
 """
 import time
-import logging
 import sys
-import subprocess
-import os
 from pathlib import Path
 from src.fishing_bot import FishingBot
 from src.config_manager import ConfigManager
