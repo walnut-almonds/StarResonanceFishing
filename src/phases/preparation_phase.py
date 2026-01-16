@@ -104,7 +104,9 @@ class PreparationPhase:
 
             try:
                 # 讀取滑鼠移動時間配置
-                move_duration = self.config.get("anti_detection.mouse_move_duration", 0.0)
+                move_duration = self.config.get(
+                    "anti_detection.mouse_move_duration", 0.0
+                )
 
                 # 按下 Alt 鍵
                 self.logger.debug("按下 Alt 鍵")
@@ -115,7 +117,10 @@ class PreparationPhase:
                     f"第一次點擊位置: ({first_click_x}, {first_click_y})"
                 )
                 self.input_controller.click(
-                    first_click_x, first_click_y, button="left", move_duration=move_duration
+                    first_click_x,
+                    first_click_y,
+                    button="left",
+                    move_duration=move_duration,
                 )
                 self.logger.debug("第一次點擊完成")
 
@@ -126,7 +131,10 @@ class PreparationPhase:
                     f"第二次點擊位置: ({second_click_x}, {second_click_y})"
                 )
                 self.input_controller.click(
-                    second_click_x, second_click_y, button="left", move_duration=move_duration
+                    second_click_x,
+                    second_click_y,
+                    button="left",
+                    move_duration=move_duration,
                 )
                 self.logger.debug("第二次點擊完成")
             finally:

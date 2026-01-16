@@ -44,7 +44,9 @@ class FishingBot:
         self.logger = logging.getLogger("FishingBot")
 
         # 讀取滑鼠移動時間配置
-        self.mouse_move_duration = config.get("anti_detection.mouse_move_duration", 0.0)
+        self.mouse_move_duration = config.get(
+            "anti_detection.mouse_move_duration", 0.0
+        )
 
         # 初始化各個模組
         self.window_manager = WindowManager(config.get("game.window_title"))

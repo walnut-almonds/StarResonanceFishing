@@ -55,12 +55,16 @@ class CastingPhase:
         click_y = int(y + h * click_pos["y"])
 
         # 讀取滑鼠移動時間配置
-        move_duration = self.config.get("anti_detection.mouse_move_duration", 0.0)
+        move_duration = self.config.get(
+            "anti_detection.mouse_move_duration", 0.0
+        )
 
         self.logger.info(
             f"執行點擊拋竿: 視窗({x},{y},{w}x{h}), 點擊位置({click_x},{click_y})"
         )
-        self.input_controller.click(click_x, click_y, button="left", move_duration=move_duration)
+        self.input_controller.click(
+            click_x, click_y, button="left", move_duration=move_duration
+        )
 
     def _cast_by_key(self):
         """鍵盤按鍵拋竿"""

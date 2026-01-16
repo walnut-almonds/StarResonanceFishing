@@ -167,7 +167,9 @@ class WinAPIInputController:
         except Exception as e:
             self.logger.error(f"滑鼠移動失敗: {e}")
 
-    def click(self, x: int, y: int, button: str = "left", move_duration: float = 0.0):
+    def click(
+        self, x: int, y: int, button: str = "left", move_duration: float = 0.0
+    ):
         """
         點擊指定位置
 
@@ -196,13 +198,13 @@ class WinAPIInputController:
                 steps = max(10, int(move_duration * 100))
                 dx = (target_x - current_pos[0]) / steps
                 dy = (target_y - current_pos[1]) / steps
-                
+
                 for i in range(steps):
                     new_x = int(current_pos[0] + dx * (i + 1))
                     new_y = int(current_pos[1] + dy * (i + 1))
                     self.SetCursorPos(new_x, new_y)
                     time.sleep(move_duration / steps)
-                
+
                 # 確保到達目標位置
                 self.SetCursorPos(target_x, target_y)
             else:

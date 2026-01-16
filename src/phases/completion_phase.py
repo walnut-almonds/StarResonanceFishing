@@ -87,10 +87,15 @@ class CompletionPhase:
                     )
 
                     # 讀取滑鼠移動時間配置
-                    move_duration = self.config.get("anti_detection.mouse_move_duration", 0.0)
+                    move_duration = self.config.get(
+                        "anti_detection.mouse_move_duration", 0.0
+                    )
 
                     self.input_controller.click(
-                        click_x, click_y, button="left", move_duration=move_duration
+                        click_x,
+                        click_y,
+                        button="left",
+                        move_duration=move_duration,
                     )
 
                     time.sleep(0.1)

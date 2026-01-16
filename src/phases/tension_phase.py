@@ -212,7 +212,9 @@ class TensionPhase:
                                     is_holding_right = False
                                 self.input_controller.key_down(left_key)
                                 is_holding_left = True
-                                self.logger.debug(f"魚在左側(完全)，按住 {left_key} 鍵")
+                                self.logger.debug(
+                                    f"魚在左側(完全)，按住 {left_key} 鍵"
+                                )
                         else:  # right
                             if not is_holding_right:
                                 if is_holding_left:
@@ -220,41 +222,51 @@ class TensionPhase:
                                     is_holding_left = False
                                 self.input_controller.key_down(right_key)
                                 is_holding_right = True
-                                self.logger.debug(f"魚在右側(完全)，按住 {right_key} 鍵")
+                                self.logger.debug(
+                                    f"魚在右側(完全)，按住 {right_key} 鍵"
+                                )
                         time.sleep(check_interval)
                     else:
-                        pre_fish_direction, pre_offset_ratio = pre_fish_position
+                        pre_fish_direction, pre_offset_ratio = (
+                            pre_fish_position
+                        )
 
                         if fish_direction == "left":
                             if is_holding_right:
                                 self.input_controller.key_up(right_key)
                                 is_holding_right = False
-                            
+
                             if pre_fish_direction == fish_direction:
                                 ratio_diff = offset_ratio - pre_offset_ratio
                                 if ratio_diff > 0:
                                     if not is_holding_left:
-                                        self.input_controller.key_down(left_key)
+                                        self.input_controller.key_down(
+                                            left_key
+                                        )
                                         is_holding_left = True
                                 elif ratio_diff < 0:
                                     if is_holding_left:
                                         self.input_controller.key_up(left_key)
                                         is_holding_left = False
-                                else: # ratio_diff == 0
+                                else:  # ratio_diff == 0
                                     if is_holding_left:
                                         self.input_controller.key_up(left_key)
                                         is_holding_left = False
                                     else:
-                                        self.input_controller.key_down(left_key)
+                                        self.input_controller.key_down(
+                                            left_key
+                                        )
                                         is_holding_left = True
-                                press_duration =  max(check_interval, abs(ratio_diff)*2)
+                                press_duration = max(
+                                    check_interval, abs(ratio_diff) * 2
+                                )
                                 time.sleep(press_duration)
                             else:
                                 if not is_holding_left:
                                     self.input_controller.key_down(left_key)
                                     is_holding_left = True
                                     time.sleep(check_interval)
-                            
+
                         else:  # right
                             if is_holding_left:
                                 self.input_controller.key_up(left_key)
@@ -263,20 +275,26 @@ class TensionPhase:
                                 ratio_diff = offset_ratio - pre_offset_ratio
                                 if ratio_diff > 0:
                                     if not is_holding_right:
-                                        self.input_controller.key_down(right_key)
+                                        self.input_controller.key_down(
+                                            right_key
+                                        )
                                         is_holding_right = True
                                 elif ratio_diff < 0:
                                     if is_holding_right:
                                         self.input_controller.key_up(right_key)
                                         is_holding_right = False
-                                else: # ratio_diff == 0
+                                else:  # ratio_diff == 0
                                     if is_holding_right:
                                         self.input_controller.key_up(right_key)
                                         is_holding_right = False
                                     else:
-                                        self.input_controller.key_down(right_key)
+                                        self.input_controller.key_down(
+                                            right_key
+                                        )
                                         is_holding_right = True
-                                press_duration =  max(check_interval, abs(ratio_diff)*2)
+                                press_duration = max(
+                                    check_interval, abs(ratio_diff) * 2
+                                )
                                 time.sleep(press_duration)
                             else:
                                 if not is_holding_right:
@@ -403,17 +421,17 @@ class TensionPhase:
             return None, 0.0
 
         splash_x, splash_y = splash_pos
-        
+
         # 讀取中心點偏移配置
         center_offset = self.config.get(
             "fishing.fish_tracking.center_offset", 0
         )
         window_center_x = x + w / 2 + center_offset
-        
+
         center_threshold_min = self.config.get(
             "fishing.fish_tracking.center_threshold_min", 0.05
         )
-        
+
         offset = splash_x - window_center_x
         offset_ratio = abs(offset) / w  # 偏移量佔視窗寬度的比例
 
