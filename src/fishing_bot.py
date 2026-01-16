@@ -43,6 +43,9 @@ class FishingBot:
         self.config = config
         self.logger = logging.getLogger("FishingBot")
 
+        # 讀取滑鼠移動時間配置
+        self.mouse_move_duration = config.get("anti_detection.mouse_move_duration", 0.0)
+
         # 初始化各個模組
         self.window_manager = WindowManager(config.get("game.window_title"))
         self.input_controller = WinAPIInputController(
@@ -140,7 +143,7 @@ class FishingBot:
         # 2. 等待咬鉤
         self.state = FishingState.WAITING
         count = 0
-        while count < 3:
+        while count < 2:
             if self.waiting_phase.wait_for_bite():
                 self.logger.info("上鉤了！")
 

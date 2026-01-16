@@ -127,7 +127,11 @@ class WaitingPhase:
         )
         click_x = int(x + w * click_pos["x"])
         click_y = int(y + h * click_pos["y"])
-        input_controller.click(click_x, click_y, button="left")
+        
+        # 讀取滑鼠移動時間配置
+        move_duration = self.config.get("anti_detection.mouse_move_duration", 0.0)
+        
+        input_controller.click(click_x, click_y, button="left", move_duration=move_duration)
 
     def _reel_by_key(self, input_controller):
         """鍵盤按鍵收竿"""

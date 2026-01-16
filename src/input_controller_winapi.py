@@ -167,7 +167,7 @@ class WinAPIInputController:
         except Exception as e:
             self.logger.error(f"滑鼠移動失敗: {e}")
 
-    def click(self, x: int, y: int, button: str = "left"):
+    def click(self, x: int, y: int, button: str = "left", move_duration: float = 0.0):
         """
         點擊指定位置
 
@@ -175,6 +175,7 @@ class WinAPIInputController:
             x: X 座標（螢幕座標）
             y: Y 座標（螢幕座標）
             button: 滑鼠按鈕 ('left', 'right', 'middle')
+            move_duration: 滑鼠移動持續時間（秒），0 表示瞬間移動
         """
         try:
             self._random_delay()
@@ -189,8 +190,25 @@ class WinAPIInputController:
             target_y = y + offset_y
 
             # 移動到目標位置
-            self.SetCursorPos(target_x, target_y)
-            time.sleep(0.01)
+            if move_duration > 0:
+                # 使用平滑移動
+                current_pos = self.get_mouse_position()
+                steps = max(10, int(move_duration * 100))
+                dx = (target_x - current_pos[0]) / steps
+                dy = (target_y - current_pos[1]) / steps
+                
+                for i in range(steps):
+                    new_x = int(current_pos[0] + dx * (i + 1))
+                    new_y = int(current_pos[1] + dy * (i + 1))
+                    self.SetCursorPos(new_x, new_y)
+                    time.sleep(move_duration / steps)
+                
+                # 確保到達目標位置
+                self.SetCursorPos(target_x, target_y)
+            else:
+                # 瞬間移動
+                self.SetCursorPos(target_x, target_y)
+                time.sleep(0.01)
 
             # 確定按鈕標誌
             if button == "left":
@@ -229,7 +247,7 @@ class WinAPIInputController:
 
             # 發送事件
             self._send_input(down_input)
-            time.sleep(random.uniform(0.02, 0.05))
+            time.sleep(random.uniform(0.1, 0.15))
             self._send_input(up_input)
 
             self.logger.debug(

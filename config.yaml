@@ -31,7 +31,9 @@ fishing:
     enabled: true  # 是否啟用魚追踪
     left_key: "a"  # 向左移動鍵
     right_key: "d"  # 向右移動鍵
-    center_threshold: 0.13  # 中心閾值（相對於視窗寬度）
+    center_threshold_min: 0.03  # 中心閾值最小值（相對於視窗寬度），小於此值視為在中心
+    center_threshold_max: 0.15  # 中心閾值最大值（相對於視窗寬度），超過此值完全壓住按鍵
+    center_offset: -80  # 中心點偏移值（像素），正值向右偏移，負值向左偏移
     key_press_duration: 0.15  # 按鍵持續時間（秒）
   # 拉力計階段配置（收竿後的QTE/追踪階段）
   tension_phase:
@@ -138,6 +140,8 @@ anti_detection:
   # 每次釣魚後休息時間範圍（秒）
   rest_time_min: 0
   rest_time_max: 0.1
+  # 滑鼠移動時間（秒），0 表示瞬間移動
+  mouse_move_duration: 0.1
 
 # 日誌配置
 logging:

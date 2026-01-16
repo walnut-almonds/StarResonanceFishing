@@ -85,11 +85,16 @@ class CompletionPhase:
                     self.logger.info(
                         f"找到'再來一次'按鈕，位置: ({click_x}, {click_y})"
                     )
-                    time.sleep(0.1)
+
+                    # 讀取滑鼠移動時間配置
+                    move_duration = self.config.get("anti_detection.mouse_move_duration", 0.0)
 
                     self.input_controller.click(
-                        click_x, click_y, button="left"
+                        click_x, click_y, button="left", move_duration=move_duration
                     )
+
+                    time.sleep(0.1)
+
                     self.logger.info("已點擊'再來一次'按鈕")
                     found = True
                     break

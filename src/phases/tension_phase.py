@@ -98,8 +98,9 @@ class TensionPhase:
         is_holding_left = False
         is_holding_right = False
         last_fish_position = None
+        pre_fish_position = ("center", 0.0)
         no_detection_count = 0
-        max_no_detection = 20
+        max_no_detection = 100
         release_time = None
 
         left_key = self.config.get("fishing.fish_tracking.left_key", "a")
@@ -162,10 +163,10 @@ class TensionPhase:
 
                 # 魚追蹤
                 if tracking_enabled:
-                    fish_position = self._get_fish_position()
+                    fish_direction, offset_ratio = self._get_fish_position()
 
-                    if fish_position is not None:
-                        last_fish_position = fish_position
+                    if fish_direction is not None:
+                        last_fish_position = (fish_direction, offset_ratio)
                         no_detection_count = 0
                     else:
                         no_detection_count += 1
@@ -173,35 +174,26 @@ class TensionPhase:
                             no_detection_count <= max_no_detection
                             and last_fish_position is not None
                         ):
-                            fish_position = last_fish_position
+                            fish_direction, offset_ratio = last_fish_position
                             self.logger.debug(
-                                f"未檢測到魚 ({no_detection_count}/{max_no_detection})，保持原動作: {fish_position}"
+                                f"未檢測到魚 ({no_detection_count}/{max_no_detection})，保持原動作: {fish_direction} ({offset_ratio:.3f})"
                             )
                         else:
                             if no_detection_count == max_no_detection + 1:
                                 self.logger.warning(
                                     f"連續{max_no_detection}次未檢測到魚，重置按鍵"
                                 )
-                            fish_position = "center"
+                            fish_direction = "center"
+                            offset_ratio = 0.0
+
+                    # 取得閾值配置
+                    center_threshold_max = self.config.get(
+                        "fishing.fish_tracking.center_threshold_max", 0.10
+                    )
 
                     # 控制方向鍵
-                    if fish_position == "left":
-                        if not is_holding_left:
-                            if is_holding_right:
-                                self.input_controller.key_up(right_key)
-                                is_holding_right = False
-                            self.input_controller.key_down(left_key)
-                            is_holding_left = True
-                            self.logger.debug(f"魚在左側，按住 {left_key} 鍵")
-                    elif fish_position == "right":
-                        if not is_holding_right:
-                            if is_holding_left:
-                                self.input_controller.key_up(left_key)
-                                is_holding_left = False
-                            self.input_controller.key_down(right_key)
-                            is_holding_right = True
-                            self.logger.debug(f"魚在右側，按住 {right_key} 鍵")
-                    else:
+                    if fish_direction == "center":
+                        # 魚在中心區域，釋放所有方向鍵
                         if is_holding_left:
                             self.input_controller.key_up(left_key)
                             is_holding_left = False
@@ -210,8 +202,90 @@ class TensionPhase:
                             self.input_controller.key_up(right_key)
                             is_holding_right = False
                             self.logger.debug(f"魚在中心，釋放 {right_key} 鍵")
+                        time.sleep(check_interval)
+                    elif offset_ratio >= center_threshold_max:
+                        # 偏移量超過最大閾值，完全壓住按鍵
+                        if fish_direction == "left":
+                            if not is_holding_left:
+                                if is_holding_right:
+                                    self.input_controller.key_up(right_key)
+                                    is_holding_right = False
+                                self.input_controller.key_down(left_key)
+                                is_holding_left = True
+                                self.logger.debug(f"魚在左側(完全)，按住 {left_key} 鍵")
+                        else:  # right
+                            if not is_holding_right:
+                                if is_holding_left:
+                                    self.input_controller.key_up(left_key)
+                                    is_holding_left = False
+                                self.input_controller.key_down(right_key)
+                                is_holding_right = True
+                                self.logger.debug(f"魚在右側(完全)，按住 {right_key} 鍵")
+                        time.sleep(check_interval)
+                    else:
+                        pre_fish_direction, pre_offset_ratio = pre_fish_position
 
-                time.sleep(check_interval)
+                        if fish_direction == "left":
+                            if is_holding_right:
+                                self.input_controller.key_up(right_key)
+                                is_holding_right = False
+                            
+                            if pre_fish_direction == fish_direction:
+                                ratio_diff = offset_ratio - pre_offset_ratio
+                                if ratio_diff > 0:
+                                    if not is_holding_left:
+                                        self.input_controller.key_down(left_key)
+                                        is_holding_left = True
+                                elif ratio_diff < 0:
+                                    if is_holding_left:
+                                        self.input_controller.key_up(left_key)
+                                        is_holding_left = False
+                                else: # ratio_diff == 0
+                                    if is_holding_left:
+                                        self.input_controller.key_up(left_key)
+                                        is_holding_left = False
+                                    else:
+                                        self.input_controller.key_down(left_key)
+                                        is_holding_left = True
+                                press_duration =  max(check_interval, abs(ratio_diff)*2)
+                                time.sleep(press_duration)
+                            else:
+                                if not is_holding_left:
+                                    self.input_controller.key_down(left_key)
+                                    is_holding_left = True
+                                    time.sleep(check_interval)
+                            
+                        else:  # right
+                            if is_holding_left:
+                                self.input_controller.key_up(left_key)
+                                is_holding_left = False
+                            if pre_fish_direction == fish_direction:
+                                ratio_diff = offset_ratio - pre_offset_ratio
+                                if ratio_diff > 0:
+                                    if not is_holding_right:
+                                        self.input_controller.key_down(right_key)
+                                        is_holding_right = True
+                                elif ratio_diff < 0:
+                                    if is_holding_right:
+                                        self.input_controller.key_up(right_key)
+                                        is_holding_right = False
+                                else: # ratio_diff == 0
+                                    if is_holding_right:
+                                        self.input_controller.key_up(right_key)
+                                        is_holding_right = False
+                                    else:
+                                        self.input_controller.key_down(right_key)
+                                        is_holding_right = True
+                                press_duration =  max(check_interval, abs(ratio_diff)*2)
+                                time.sleep(press_duration)
+                            else:
+                                if not is_holding_right:
+                                    self.input_controller.key_down(right_key)
+                                    is_holding_right = True
+                                    time.sleep(check_interval)
+                    pre_fish_position = (fish_direction, offset_ratio)
+                else:
+                    time.sleep(check_interval)
 
         finally:
             # 確保釋放所有按鍵
@@ -294,16 +368,17 @@ class TensionPhase:
             self.logger.debug(f"紅色張力模板檢測失敗: {e}")
             return False
 
-    def _get_fish_position(self) -> str:
+    def _get_fish_position(self):
         """
         取得魚的位置狀態
 
         Returns:
-            'left', 'right', 'center', or None
+            tuple: (direction, offset_ratio) 其中 direction 是 'left', 'right', 'center' 或 None
+                   offset_ratio 是偏移量佔視窗寬度的比例（絕對值）
         """
         window_rect = self.window_manager.get_window_rect()
         if not window_rect:
-            return None
+            return None, 0.0
 
         x, y, w, h = window_rect
         splash_config = self.config.get("detection.fish_splash", {})
@@ -325,19 +400,26 @@ class TensionPhase:
         )
 
         if not splash_pos:
-            return None
+            return None, 0.0
 
         splash_x, splash_y = splash_pos
-        window_center_x = x + w / 2 - 40
-        center_threshold = self.config.get(
-            "fishing.fish_tracking.center_threshold", 0.1
+        
+        # 讀取中心點偏移配置
+        center_offset = self.config.get(
+            "fishing.fish_tracking.center_offset", 0
         )
-        threshold_pixels = w * center_threshold
+        window_center_x = x + w / 2 + center_offset
+        
+        center_threshold_min = self.config.get(
+            "fishing.fish_tracking.center_threshold_min", 0.05
+        )
+        
         offset = splash_x - window_center_x
+        offset_ratio = abs(offset) / w  # 偏移量佔視窗寬度的比例
 
-        if offset < -threshold_pixels:
-            return "left"
-        elif offset > threshold_pixels:
-            return "right"
+        if offset_ratio < center_threshold_min:
+            return "center", offset_ratio
+        elif offset < 0:
+            return "left", offset_ratio
         else:
-            return "center"
+            return "right", offset_ratio

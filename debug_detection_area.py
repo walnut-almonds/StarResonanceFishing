@@ -133,7 +133,10 @@ def main():
 
         # 計算閾值邊界
         threshold_pixels = int(window.width * center_threshold)
-        center_x = window.width // 2 - 40  # 視窗中心X座標
+        center_offset = config.get(
+            "fishing.fish_tracking.center_offset", 0
+        )
+        center_x = window.width // 2 + center_offset  # 視窗中心X座標
         left_boundary = center_x - threshold_pixels
         right_boundary = center_x + threshold_pixels
 

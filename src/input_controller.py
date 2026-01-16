@@ -59,7 +59,7 @@ class InputController:
         except Exception as e:
             self.logger.error(f"按鍵操作失敗: {e}")
 
-    def click(self, x: int, y: int, button: str = "left"):
+    def click(self, x: int, y: int, button: str = "left", move_duration: float = 0.0):
         """
         點擊指定位置
 
@@ -67,6 +67,7 @@ class InputController:
             x: X 座標
             y: Y 座標
             button: 滑鼠按鈕 ('left', 'right', 'middle')
+            move_duration: 滑鼠移動持續時間（秒），0 表示使用預設（瞬間移動）
         """
         try:
             self._random_delay()
@@ -77,7 +78,20 @@ class InputController:
             # 限制最大偏移量，避免點擊錯誤位置
             offset_x = max(-3, min(3, offset_x))
             offset_y = max(-3, min(3, offset_y))
-            pyautogui.click(x + offset_x, y + offset_y, button=button)
+            
+            target_x = x + offset_x
+            target_y = y + offset_y
+            
+            if move_duration > 0:
+                # 先移動到目標位置，再點擊
+                duration_variation = random.gauss(move_duration, move_duration * 0.1)
+                duration_variation = max(0.1, min(move_duration * 2, duration_variation))
+                pyautogui.moveTo(target_x, target_y, duration=duration_variation)
+                pyautogui.click(button=button)
+            else:
+                # 直接點擊（PyAutoGUI 預設行為）
+                pyautogui.click(target_x, target_y, button=button)
+            
             self.logger.debug(
                 f"點擊位置: ({x}, {y}), 偏移: ({offset_x}, {offset_y})"
             )
