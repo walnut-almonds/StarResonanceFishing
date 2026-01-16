@@ -206,7 +206,7 @@ class WinAPIInputController:
                     time.sleep(move_duration / steps)
 
                 # 確保到達目標位置
-                self.SetCursorPos(target_x, target_y)
+                # self.SetCursorPos(target_x, target_y)
             else:
                 # 瞬間移動
                 self.SetCursorPos(target_x, target_y)
@@ -249,7 +249,7 @@ class WinAPIInputController:
 
             # 發送事件
             self._send_input(down_input)
-            time.sleep(random.uniform(0.1, 0.15))
+            time.sleep(random.uniform(0.02, 0.05))
             self._send_input(up_input)
 
             self.logger.debug(
