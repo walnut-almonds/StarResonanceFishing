@@ -32,7 +32,6 @@ ENV/
 VERSION
 
 # IDE
-.vscode/
 .idea/
 *.swp
 *.swo

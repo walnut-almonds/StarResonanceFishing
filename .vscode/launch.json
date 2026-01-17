@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Main",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal",
+        },
+        {
+            "name": "Debug Detection Area",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/debug_detection_area.py",
+            "console": "integratedTerminal",
+        },
+    ]
+}
