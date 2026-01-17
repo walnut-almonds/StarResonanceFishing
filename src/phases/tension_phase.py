@@ -4,6 +4,9 @@
 
 import logging
 import time
+from pathlib import Path
+
+import cv2
 
 from ..utils import get_resource_path
 
@@ -78,20 +81,26 @@ class TensionPhase:
         check_interval = self.config.get(
             "fishing.tension_phase.check_interval", 0.1
         )
+        red_tension_intermittent_hold_threshold =self.config.get(
+            "fishing.tension_phase.red_tension_intermittent_hold_threshold", 50
+        )
+        intermittent_hold_duration = self.config.get(
+            "fishing.tension_phase.intermittent_hold_duration", 0.2
+        )
+        intermittent_release_duration = self.config.get(
+            "fishing.tension_phase.intermittent_release_duration", 0.2
+        )
+        red_tension_max_threshold = self.config.get(
+            "fishing.tension_phase.red_tension_max_threshold", 100
+        )
+        max_tension_release_duration = self.config.get(
+            "fishing.tension_phase.max_tension_release_duration", 0.3
+        )
         tracking_enabled = self.config.get(
             "fishing.fish_tracking.enabled", True
         )
-        red_detection_mode = self.config.get(
-            "fishing.tension_phase.red_detection_mode", "color"
-        )
-        red_threshold = self.config.get(
-            "fishing.tension_phase.red_threshold", 0.3
-        )
-        release_hold_duration = self.config.get(
-            "fishing.tension_phase.release_hold_duration", 0.5
-        )
 
-        self.logger.info(f"紅色張力檢測模式: {red_detection_mode}")
+        self.logger.info(f"紅色張力檢測")
 
         start_time = time.time()
         is_holding_mouse = False
@@ -101,7 +110,7 @@ class TensionPhase:
         pre_fish_position = ("center", 0.0)
         no_detection_count = 0
         max_no_detection = 100
-        release_time = None
+        click_hold_release_time = None
         # 因為左右魚桿比放開還慢N倍，這個參數用來補償這個時間差，數字越大表示魚桿壓住的時間越長
         hold_rate = 2.5
         # 因為左右魚桿和魚的速度不同，這個參數用來調整追蹤速度，數字越大表示魚桿壓住的時間越長
@@ -123,48 +132,51 @@ class TensionPhase:
                     break
 
                 # 檢測紅色張力狀態
-                current_time = time.time()
-                is_red_high = False
-
-                if red_detection_mode == "template":
+                # tension_value = self._detect_red_tension_ocr()
+                tension_value = self._detect_red_tension_color()
+                if tension_value is not None:
+                    self.logger.debug(f"張力值: {tension_value}")
+                else:
+                    self.logger.debug("張力值識別失敗")
                     is_red_high = self._detect_red_tension_template()
                     if is_red_high:
                         self.logger.debug("檢測到紅色張力模板")
-                else:
-                    red_ratio = self._get_red_ratio_in_tension_bar()
-                    self.logger.debug(f"當前紅色比例: {red_ratio:.2%}")
-                    is_red_high = red_ratio > red_threshold
-
-                # 檢查釋放保持期
-                if release_time is not None:
-                    elapsed_since_release = current_time - release_time
-                    if elapsed_since_release < release_hold_duration:
-                        if is_holding_mouse:
-                            self.input_controller.mouse_up("left")
-                            is_holding_mouse = False
-                        self.logger.debug(
-                            f"保持釋放狀態 ({elapsed_since_release:.1f}/{release_hold_duration}秒)"
-                        )
+                        tension_value = 101  # 強制視為過高
                     else:
-                        release_time = None
-                        self.logger.info("釋放保持期結束")
+                        tension_value = 0
 
                 # 控制左鍵
-                if release_time is None:
-                    if is_red_high:
+                current_time = time.time()
+                elapsed_since_time = None
+                if click_hold_release_time is not None:
+                    elapsed_since_time = current_time - click_hold_release_time
+                if tension_value >= red_tension_max_threshold:
+                    if elapsed_since_time is None or elapsed_since_time >= max_tension_release_duration:
+                        # 張力過高，釋放滑鼠左鍵
                         if is_holding_mouse:
                             self.input_controller.mouse_up("left")
                             is_holding_mouse = False
-                            release_time = current_time
+                            click_hold_release_time = current_time
                             self.logger.info(
-                                f"拉力過高！釋放滑鼠左鍵並保持{release_hold_duration}秒"
+                                f"拉力過高！釋放滑鼠左鍵並保持{max_tension_release_duration}秒"
                             )
+                elif tension_value >= red_tension_intermittent_hold_threshold:
+                    # 張力較高，間歇點擊滑鼠左鍵
+                    if is_holding_mouse:
+                        if elapsed_since_time is None or elapsed_since_time >= intermittent_hold_duration:
+                            self.input_controller.mouse_up("left")
+                            is_holding_mouse = False
+                            click_hold_release_time = current_time
                     else:
-                        if not is_holding_mouse:
+                        if elapsed_since_time is None or elapsed_since_time >= intermittent_release_duration:
                             self.input_controller.mouse_down("left")
                             is_holding_mouse = True
-                            self.logger.info("拉力正常，按住滑鼠左鍵")
-
+                            click_hold_release_time = current_time
+                else:
+                    if not is_holding_mouse:
+                        self.input_controller.mouse_down("left")
+                        is_holding_mouse = True
+                        
                 # 魚追蹤
                 if tracking_enabled:
                     fish_direction, offset_ratio = self._get_fish_position()
@@ -337,14 +349,14 @@ class TensionPhase:
 
         self.logger.info("拉力計階段完成")
 
-    def _get_red_ratio_in_tension_bar(self) -> float:
+    def _detect_red_tension_color(self) -> int:
         """取得拉力計中紅色區域的比例"""
         window_rect = self.window_manager.get_window_rect()
         if not window_rect:
-            return 0.0
+            return None
 
         x, y, w, h = window_rect
-        tension_config = self.config.get("detection.tension_bar", {})
+        tension_config = self.config.get("detection.red_tension", {})
         region_config = tension_config.get(
             "region", {"x": 0.25, "y": 0.7, "width": 0.4, "height": 0.2}
         )
@@ -358,7 +370,7 @@ class TensionPhase:
 
         screen = self.image_detector.capture_screen(region)
         if screen is None:
-            return 0.0
+            return None
 
         return self.image_detector.detect_red_ratio(screen)
 
@@ -369,7 +381,7 @@ class TensionPhase:
             return False
 
         x, y, w, h = window_rect
-        red_tension_config = self.config.get("detection.red_tension", {})
+        red_tension_config = self.config.get("detection.red_tension_template", {})
         region_config = red_tension_config.get(
             "region", {"x": 0.33, "y": 0.8, "width": 0.34, "height": 0.06}
         )

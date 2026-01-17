@@ -5,3 +5,4 @@ pillow==10.1.0
 pyyaml==6.0.1
 pygetwindow==0.0.9
 pynput==1.7.6
+pytesseract==0.3.13

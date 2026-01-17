@@ -10,7 +10,6 @@ import cv2
 import numpy as np
 import pyautogui
 
-
 class ImageDetector:
     """圖像檢測器"""
 
@@ -113,45 +112,48 @@ class ImageDetector:
     def detect_red_ratio(
         self,
         screen: np.ndarray,
-        lower_red1: Tuple[int, int, int] = (0, 50, 50),
-        upper_red1: Tuple[int, int, int] = (10, 255, 255),
-        lower_red2: Tuple[int, int, int] = (170, 50, 50),
-        upper_red2: Tuple[int, int, int] = (180, 255, 255),
-    ) -> float:
+    ) -> int:
         """
-        檢測圖像中紅色像素的比例
+        檢測圖像中特定顏色範圍的像素，判定張力狀態
+        
+        顏色範圍定義（BGR 格式）：
+        - 張力較高 (50): RGB 246,113,13 ~ 229,13,13 (BGR: 13,113,246 ~ 13,13,229)
+        - 張力過高 (100): RGB 229,13,13 ~ 255,255,255 (BGR: 13,13,229 ~ 255,255,255)
 
         Args:
             screen: 輸入圖像（BGR格式）
-            lower_red1: 紅色HSV範圍1的下界
-            upper_red1: 紅色HSV範圍1的上界
-            lower_red2: 紅色HSV範圍2的下界（紅色在HSV中跨越180度）
-            upper_red2: 紅色HSV範圍2的上界
 
         Returns:
-            紅色像素占總像素的比例 (0.0 - 1.0)
+            張力值：
+            - 0: 無張力
+            - 50: 張力較高（需要間歇點擊）
+            - 100: 張力過高（需要釋放）
         """
         if screen is None:
-            return 0.0
+            return 0
 
         try:
-            # 轉換為HSV色彩空間
-            hsv = cv2.cvtColor(screen, cv2.COLOR_BGR2HSV)
-
-            # 創建紅色掩码（紅色在HSV中跨越0和180度，需要兩個範圍）
-            mask1 = cv2.inRange(hsv, lower_red1, upper_red1)
-            mask2 = cv2.inRange(hsv, lower_red2, upper_red2)
-            red_mask = cv2.bitwise_or(mask1, mask2)
-
-            # 計算紅色像素数量
-            red_pixels = cv2.countNonZero(red_mask)
             total_pixels = screen.shape[0] * screen.shape[1]
+            
+            # 定義張力過高的顏色範圍 (BGR: 13,13,229 ~ 255,255,255)
+            # RGB 229,13,13 ~ 255,255,255
+            lower_critical = np.array([13, 13, 229], dtype=np.uint8)
+            upper_critical = np.array([255, 255, 255], dtype=np.uint8)
+            mask_critical = cv2.inRange(screen, lower_critical, upper_critical)
+            critical_pixels = cv2.countNonZero(mask_critical)
+            critical_ratio = critical_pixels / total_pixels if total_pixels > 0 else 0.0
+            
+            if critical_ratio > 0.95:
+                self.logger.debug(f"檢測到張力過高，像素比例: {critical_ratio:.3f}")
+                return 100
+            if critical_ratio > 0.6:
+                self.logger.debug(f"檢測到張力較高，像素比例: {critical_ratio:.3f}")
+                return 50
 
-            ratio = red_pixels / total_pixels if total_pixels > 0 else 0.0
-            return ratio
+            return 0
         except Exception as e:
-            self.logger.error(f"紅色檢測失敗: {e}")
-            return 0.0
+            self.logger.error(f"張力顏色檢測失敗: {e}")
+            return 0
 
     def detect_color_change(
         self,
@@ -321,4 +323,45 @@ class ImageDetector:
 
         except Exception as e:
             self.logger.error(f"白色水花檢測失敗: {e}")
+            return None
+
+
+    import pytesseract
+
+    pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
+
+    def _detect_tension_by_ocr(self, region: Tuple[int, int, int, int]) -> int:
+        """
+        使用 OCR 識別張力表上的數字（0-100）
+        
+        Returns:
+            張力數字，識別失敗返回 None
+        """
+
+        try:
+            screen = self.capture_screen(region)
+            if screen is None:
+                return None
+
+            # 轉換為灰度圖
+            gray = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+            
+            # 二值化處理，增強數字對比度
+            _, binary = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+            
+            # 使用 pytesseract 識別數字
+            # 配置為只識別數字
+            custom_config = r'--oem 3 --psm 7 -c tessedit_char_whitelist=0123456789'
+            text = pytesseract.image_to_string(binary, config=custom_config)
+            
+            # 提取數字
+            text = text.strip()
+            if text.isdigit():
+                value = int(text)
+                if 0 <= value <= 100:
+                    return value
+            
+            return None
+        except Exception as e:
+            self.logger.debug(f"OCR 識別失敗: {e}")
             return None

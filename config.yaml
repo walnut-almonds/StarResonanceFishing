@@ -39,14 +39,14 @@ fishing:
   tension_phase:
     duration: 180  # 最大持續時間（秒）
     check_interval: 0.1  # 檢測間格（秒）
-    release_hold_duration: 0.3  # 釋放後保持釋放狀態的時間（秒）
-    # 紅色檢測方式: 'color' 或 'template'
-    # 'color' - 使用紅色比例檢測
-    # 'template' - 使用模板匹配檢測紅色張力圖片
-    red_detection_mode: "template"  # 可選: "color" 或 "template"
     red_threshold: 0.17  # 紅色比例閾值（0.0-1.0），僅在 red_detection_mode 為 color 時使用
     red_template: "templates/red_tension.png"  # 紅色張力模板圖片路徑，僅在 red_detection_mode 為 template 時使用
     red_template_threshold: 0.5  # 模板匹配閾值，僅在 red_detection_mode 為 template 時使用
+    red_tension_intermittent_hold_threshold: 50  # 張力數字閾值（0-100），高於此值將開始間歇點擊收竿
+    intermittent_hold_duration: 0.01  # 間歇點擊持續時間（秒）
+    intermittent_release_duration: 0.01  # 間歇釋放持續時間（秒）
+    red_tension_max_threshold: 100  # 張力數字閾值（0-100），超過此值視為張力過高
+    max_tension_release_duration: 0.3  # 釋放後保持釋放狀態的時間（秒）
 
 # 圖像識別配置
 detection:
@@ -84,8 +84,16 @@ detection:
     template: "templates/tension_bar.png"
     # 或使用顏色檢測
     # color: [255, 100, 50]  # BGR 格式
-  # 紅色張力檢測配置（用於模板匹配模式）
+  # 紅色張力檢測配置
   red_tension:
+    # 檢測區域（相對於遊戲視窗，比例 0-1）
+    region:
+      x: 0.37
+      y: 0.825
+      width: 0.28
+      height: 0.01
+  # 紅色張力檢測配置（用於模板匹配）
+  red_tension_template:
     # 檢測區域（相對於遊戲視窗，比例 0-1）
     region:
       # x: 0.45
@@ -96,6 +104,13 @@ detection:
       y: 0.8
       width: 0.3
       height: 0.1
+  # 紅色張力檢測配置（用於 OSC）
+  red_tension_osc:
+    region:
+      x: 0.61
+      y: 0.77
+      width: 0.05
+      height: 0.04
   # "再來一次"按鈕檢測配置（釣魚完成後點擊繼續）
   retry_button:
     template: "templates/retry_button.png"  # 按鈕的模板圖片
@@ -145,5 +160,5 @@ anti_detection:
 
 # 日誌配置
 logging:
-  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  level: "DEBUG"  # DEBUG, INFO, WARNING, ERROR
   file: "fishing_bot.log"

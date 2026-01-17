@@ -48,6 +48,10 @@ opencv-python==4.8.1.78 \
     --hash=sha256:c4c406bdb41eb21ea51b4e90dfbc989c002786c3f601c236a99c59a54670a394 \
     --hash=sha256:cc7adbbcd1112877a39274106cb2752e04984bc01a031162952e97450d6117f6
     # via -r requirements.txt
+packaging==25.0 \
+    --hash=sha256:29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484 \
+    --hash=sha256:d443872c98d677bf60f6a1f2f8c1cb748e8fe762d2bf9d3148b5599295b0fc4f
+    # via pytesseract
 pillow==10.1.0 \
     --hash=sha256:00f438bb841382b15d7deb9a05cc946ee0f2c352653c7aa659e75e592f6fa17d \
     --hash=sha256:0248f86b3ea061e67817c47ecbe82c23f9dd5d5226200eb9090b3873d3ca32de \
@@ -106,6 +110,7 @@ pillow==10.1.0 \
     # via
     #   -r requirements.txt
     #   pyscreeze
+    #   pytesseract
 pyautogui==0.9.54 \
     --hash=sha256:dd1d29e8fd118941cb193f74df57e5c6ff8e9253b99c7b04f39cfc69f3ae04b2
     # via -r requirements.txt
@@ -132,6 +137,10 @@ pyrect==0.2.0 \
 pyscreeze==1.0.1 \
     --hash=sha256:cf1662710f1b46aa5ff229ee23f367da9e20af4a78e6e365bee973cad0ead4be
     # via pyautogui
+pytesseract==0.3.13 \
+    --hash=sha256:4bf5f880c99406f52a3cfc2633e42d9dc67615e69d8a509d74867d3baddb5db9 \
+    --hash=sha256:7a99c6c2ac598360693d83a416e36e0b33a67638bb9d77fdcac094a3589d4b34
+    # via -r requirements.txt
 pytweening==1.2.0 \
     --hash=sha256:243318b7736698066c5f362ec5c2b6434ecf4297c3c8e7caa8abfe6af4cac71b
     # via pyautogui

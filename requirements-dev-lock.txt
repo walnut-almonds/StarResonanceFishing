@@ -73,6 +73,7 @@ packaging==25.0 \
     #   build
     #   pyinstaller
     #   pyinstaller-hooks-contrib
+    #   pytesseract
 pefile==2024.8.26 \
     --hash=sha256:3ff6c5d8b43e8c37bb6e6dd5085658d658a7a0bdcd20b6a07b1fcfc1c4e9d632 \
     --hash=sha256:76f8b485dcd3b1bb8166f1128d395fa3d87af26360c2358fb75b80019b957c6f
@@ -135,6 +136,7 @@ pillow==10.1.0 \
     # via
     #   -r requirements.txt
     #   pyscreeze
+    #   pytesseract
 pip-tools==7.5.2 \
     --hash=sha256:2d64d72da6a044da1110257d333960563d7a4743637e8617dd2610ae7b82d60f \
     --hash=sha256:2fe16db727bbe5bf28765aeb581e792e61be51fc275545ef6725374ad720a1ce
@@ -189,6 +191,10 @@ pyrect==0.2.0 \
 pyscreeze==1.0.1 \
     --hash=sha256:cf1662710f1b46aa5ff229ee23f367da9e20af4a78e6e365bee973cad0ead4be
     # via pyautogui
+pytesseract==0.3.13 \
+    --hash=sha256:4bf5f880c99406f52a3cfc2633e42d9dc67615e69d8a509d74867d3baddb5db9 \
+    --hash=sha256:7a99c6c2ac598360693d83a416e36e0b33a67638bb9d77fdcac094a3589d4b34
+    # via -r requirements.txt
 pytweening==1.2.0 \
     --hash=sha256:243318b7736698066c5f362ec5c2b6434ecf4297c3c8e7caa8abfe6af4cac71b
     # via pyautogui
