@@ -6,18 +6,13 @@ altgraph==0.17.5 \
     # via
     #   macholib
     #   pyinstaller
-evdev==1.9.2 ; 'linux' in sys_platform \
-    --hash=sha256:5d3278892ce1f92a74d6bf888cc8525d9f68af85dbe336c95d1c87fb8f423069
-    # via pynput
 macholib==1.16.4 ; sys_platform == 'darwin' \
     --hash=sha256:da1a3fa8266e30f0ce7e97c6a54eefaae8edd1e5f86f3eb8b95457cae90265ea \
     --hash=sha256:f408c93ab2e995cd2c46e34fe328b130404be143469e41bc366c807448979362
     # via pyinstaller
 mouseinfo==0.1.3 \
     --hash=sha256:2c62fb8885062b8e520a3cce0a297c657adcc08c60952eb05bc8256ef6f7f6e7
-    # via
-    #   pyautogui
-    #   starresonancefishing
+    # via pyautogui
 numpy==2.4.1 \
     --hash=sha256:2f44de05659b67d20499cbc96d49f2650769afcb398b79b324bb6e297bfe3844 \
     --hash=sha256:2ffd257026eb1b34352e749d7cc1678b5eeec3e329ad8c9965a797e08ccba205 \
@@ -92,9 +87,7 @@ pillow==12.1.0 \
     --hash=sha256:e5dcbe95016e88437ecf33544ba5db21ef1b8dd6e1b434a2cb2a3d605299e643 \
     --hash=sha256:e6bdb408f7c9dd2a5ff2b14a3b0bb6d4deb29fb9961e6eb3ae2031ae9a5cec13 \
     --hash=sha256:f61333d817698bdcdd0f9d7793e365ac3d2a21c1f1eb02b32ad6aefb8d8ea831
-    # via
-    #   pytesseract
-    #   starresonancefishing
+    # via pytesseract
 pip==25.3 \
     --hash=sha256:8d0538dbbd7babbd207f261ed969c65de439f6bc9e5dbd3b3b9a77f25d95f343 \
     --hash=sha256:9655943313a94722b7774661c21049070f6bbb0a1516bf02f7c8d5d9201514cd
@@ -119,81 +112,46 @@ pyinstaller==6.18.0 \
     --hash=sha256:cdc507542783511cad4856fce582fdc37e9f29665ca596889c663c83ec8c6ec9 \
     --hash=sha256:dba4b70e3c9ba09aab51152c72a08e58a751851548f77ad35944d32a300c8381 \
     --hash=sha256:f998675b7ccb2dabbb1dc2d6f18af61d55428ad6d38e6c4d700417411b697d37
-pyinstaller-hooks-contrib==2025.11 \
-    --hash=sha256:777e163e2942474aa41a8e6d31ac1635292d63422c3646c176d584d04d971c34 \
-    --hash=sha256:dfe18632e06655fa88d218e0d768fd753e1886465c12a6d4bce04f1aaeec917d
+pyinstaller-hooks-contrib==2026.0 \
+    --hash=sha256:0120893de491a000845470ca9c0b39284731ac6bace26f6849dea9627aaed48e \
+    --hash=sha256:0590db8edeba3e6c30c8474937021f5cd39c0602b4d10f74a064c73911efaca5
     # via pyinstaller
 pymsgbox==2.0.1 \
     --hash=sha256:5de8ec19bca2ca7e6c09d39c817c83f17c75cee80275235f43a9931db699f73b \
     --hash=sha256:98d055c49a511dcc10fa08c3043e7102d468f5e4b3a83c6d3c61df722c7d798d
-    # via
-    #   pyautogui
-    #   starresonancefishing
-pynput==1.8.1 \
-    --hash=sha256:42dfcf27404459ca16ca889c8fb8ffe42a9fe54f722fd1a3e130728e59e768d2 \
-    --hash=sha256:70d7c8373ee98911004a7c938742242840a5628c004573d84ba849d4601df81e
-    # via starresonancefishing
+    # via pyautogui
 pyobjc-core==12.1 ; sys_platform == 'darwin' \
     --hash=sha256:2bb3903f5387f72422145e1466b3ac3f7f0ef2e9960afa9bcd8961c5cbf8bd21 \
     --hash=sha256:453b191df1a4b80e756445b935491b974714456ae2cbae816840bd96f86db882 \
     --hash=sha256:844515f5d86395b979d02152576e7dee9cc679acc0b32dc626ef5bda315eaa43
     # via
     #   pyautogui
-    #   pyobjc-framework-applicationservices
     #   pyobjc-framework-cocoa
-    #   pyobjc-framework-coretext
     #   pyobjc-framework-quartz
-pyobjc-framework-applicationservices==12.1 ; sys_platform == 'darwin' \
-    --hash=sha256:1f72e20009a4ebfd5ed5b23dc11c1528ad6b55cc63ee71952ddb2a5e5f1cb7da \
-    --hash=sha256:c06abb74f119bc27aeb41bf1aef8102c0ae1288aec1ac8665ea186a067a8945b \
-    --hash=sha256:f43c9a24ad97a9121276d4d571aa04a924282c80d7291cfb3b29839c3e2013a8
-    # via pynput
 pyobjc-framework-cocoa==12.1 ; sys_platform == 'darwin' \
     --hash=sha256:03342a60fc0015bcdf9b93ac0b4f457d3938e9ef761b28df9564c91a14f0129a \
     --hash=sha256:5556c87db95711b985d5efdaaf01c917ddd41d148b1e52a0c66b1a2e2c5c1640 \
     --hash=sha256:6ba1dc1bfa4da42d04e93d2363491275fb2e2be5c20790e561c8a9e09b8cf2cc
-    # via
-    #   pyobjc-framework-applicationservices
-    #   pyobjc-framework-coretext
-    #   pyobjc-framework-quartz
-pyobjc-framework-coretext==12.1 ; sys_platform == 'darwin' \
-    --hash=sha256:782a1a9617ea267c05226e9cd81a8dec529969a607fe1e037541ee1feb9524e9 \
-    --hash=sha256:7afe379c5a870fa3e66e6f65231c3c1732d9ccd2cd2a4904b2cd5178c9e3c562 \
-    --hash=sha256:e0adb717738fae395dc645c9e8a10bb5f6a4277e73cba8fa2a57f3b518e71da5
-    # via pyobjc-framework-applicationservices
+    # via pyobjc-framework-quartz
 pyobjc-framework-quartz==12.1 ; sys_platform == 'darwin' \
     --hash=sha256:0cc08fddb339b2760df60dea1057453557588908e42bdc62184b6396ce2d6e9a \
     --hash=sha256:27f782f3513ac88ec9b6c82d9767eef95a5cf4175ce88a1e5a65875fee799608 \
     --hash=sha256:42d306b07f05ae7d155984503e0fb1b701fecd31dcc5c79fe8ab9790ff7e0de0
-    # via
-    #   pyautogui
-    #   pynput
-    #   pyobjc-framework-applicationservices
-    #   pyobjc-framework-coretext
+    # via pyautogui
 pyperclip==1.11.0 \
     --hash=sha256:244035963e4428530d9e3a6101a1ef97209c6825edab1567beac148ccc1db1b6 \
     --hash=sha256:299403e9ff44581cb9ba2ffeed69c7aa96a008622ad0c46cb575ca75b5b84273
-    # via
-    #   mouseinfo
-    #   starresonancefishing
+    # via mouseinfo
 pyrect==0.2.0 \
     --hash=sha256:f65155f6df9b929b67caffbd57c0947c5ae5449d3b580d178074bffb47a09b78
-    # via
-    #   pygetwindow
-    #   starresonancefishing
+    # via pygetwindow
 pyscreeze==1.0.1 \
     --hash=sha256:cf1662710f1b46aa5ff229ee23f367da9e20af4a78e6e365bee973cad0ead4be
-    # via
-    #   pyautogui
-    #   starresonancefishing
+    # via pyautogui
 pytesseract==0.3.13 \
     --hash=sha256:4bf5f880c99406f52a3cfc2633e42d9dc67615e69d8a509d74867d3baddb5db9 \
     --hash=sha256:7a99c6c2ac598360693d83a416e36e0b33a67638bb9d77fdcac094a3589d4b34
     # via starresonancefishing
-python-xlib==0.33 ; 'linux' in sys_platform \
-    --hash=sha256:55af7906a2c75ce6cb280a584776080602444f75815a7aff4d287bb2d7018b32 \
-    --hash=sha256:c3534038d42e0df2f1392a1b30a15a4ff5fdc2b86cfa94f072bf11b10a164398
-    # via pynput
 python3-xlib==0.15 ; sys_platform == 'linux' \
     --hash=sha256:dc4245f3ae4aa5949c1d112ee4723901ade37a96721ba9645f2bfa56e5b383f8
     # via
@@ -201,9 +159,7 @@ python3-xlib==0.15 ; sys_platform == 'linux' \
     #   pyautogui
 pytweening==1.2.0 \
     --hash=sha256:243318b7736698066c5f362ec5c2b6434ecf4297c3c8e7caa8abfe6af4cac71b
-    # via
-    #   pyautogui
-    #   starresonancefishing
+    # via pyautogui
 pywin32-ctypes==0.2.3 ; sys_platform == 'win32' \
     --hash=sha256:8a1513379d709975552d202d942d9837758905c8d01eb82b8bcc30918929e7b8 \
     --hash=sha256:d162dc04946d704503b2edc4d55f3dba5c1d539ead017afa00142c38b9885755
@@ -259,10 +215,3 @@ setuptools==80.9.0 \
     # via
     #   pyinstaller
     #   pyinstaller-hooks-contrib
-six==1.17.0 \
-    --hash=sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274 \
-    --hash=sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81
-    # via
-    #   pynput
-    #   python-xlib
-    #   starresonancefishing
