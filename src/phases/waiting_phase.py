@@ -5,13 +5,21 @@
 import logging
 import time
 
+from ..config_manager import ConfigManager
+from ..image_detector import ImageDetector
 from ..utils import get_resource_path
+from ..window_manager import WindowManager
 
 
 class WaitingPhase:
     """等待咬鉤階段處理器"""
 
-    def __init__(self, config, window_manager, image_detector):
+    def __init__(
+        self,
+        config: ConfigManager,
+        window_manager: WindowManager,
+        image_detector: ImageDetector,
+    ):
         """
         初始化等待咬鉤階段處理器
 

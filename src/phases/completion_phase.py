@@ -5,14 +5,22 @@
 import logging
 import time
 
+from ..config_manager import ConfigManager
+from ..image_detector import ImageDetector
+from ..input_controller_winapi import WinAPIInputController
 from ..utils import get_resource_path
+from ..window_manager import WindowManager
 
 
 class CompletionPhase:
     """釣魚完成與重置階段處理器"""
 
     def __init__(
-        self, config, window_manager, input_controller, image_detector
+        self,
+        config: ConfigManager,
+        window_manager: WindowManager,
+        input_controller: WinAPIInputController,
+        image_detector: ImageDetector,
     ):
         """
         初始化完成階段處理器

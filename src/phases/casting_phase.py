@@ -5,11 +5,20 @@
 import logging
 import time
 
+from ..config_manager import ConfigManager
+from ..input_controller_winapi import WinAPIInputController
+from ..window_manager import WindowManager
+
 
 class CastingPhase:
     """拋竿階段處理器"""
 
-    def __init__(self, config, window_manager, input_controller):
+    def __init__(
+        self,
+        config: ConfigManager,
+        window_manager: WindowManager,
+        input_controller: WinAPIInputController,
+    ):
         """
         初始化拋竿階段處理器
 
