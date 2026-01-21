@@ -5,10 +5,10 @@
 import logging
 import time
 
-from ..config_manager import ConfigManager
-from ..image_detector import ImageDetector
-from ..utils import get_resource_path
-from ..window_manager import WindowManager
+from src.config_manager import ConfigManager
+from src.image_detector import ImageDetector
+from src.utils import get_resource_path
+from src.window_manager import WindowManager
 
 
 class WaitingPhase:

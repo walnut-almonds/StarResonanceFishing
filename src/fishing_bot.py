@@ -7,17 +7,17 @@ import random
 import time
 from enum import Enum
 
-from .config_manager import ConfigManager
-from .image_detector import ImageDetector
-from .input_controller_winapi import WinAPIInputController
-from .phases import (
+from src.config_manager import ConfigManager
+from src.image_detector import ImageDetector
+from src.input_controller_winapi import WinAPIInputController
+from src.phases import (
     CastingPhase,
     CompletionPhase,
     PreparationPhase,
     TensionPhase,
     WaitingPhase,
 )
-from .window_manager import WindowManager
+from src.window_manager import WindowManager
 
 
 class FishingState(Enum):

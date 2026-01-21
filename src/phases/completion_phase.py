@@ -5,11 +5,11 @@
 import logging
 import time
 
-from ..config_manager import ConfigManager
-from ..image_detector import ImageDetector
-from ..input_controller_winapi import WinAPIInputController
-from ..utils import get_resource_path
-from ..window_manager import WindowManager
+from src.config_manager import ConfigManager
+from src.image_detector import ImageDetector
+from src.input_controller_winapi import WinAPIInputController
+from src.utils import get_resource_path
+from src.window_manager import WindowManager
 
 
 class CompletionPhase:

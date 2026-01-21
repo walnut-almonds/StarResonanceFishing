@@ -5,9 +5,9 @@
 import logging
 import time
 
-from ..config_manager import ConfigManager
-from ..input_controller_winapi import WinAPIInputController
-from ..window_manager import WindowManager
+from src.config_manager import ConfigManager
+from src.input_controller_winapi import WinAPIInputController
+from src.window_manager import WindowManager
 
 
 class CastingPhase:
