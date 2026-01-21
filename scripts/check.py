@@ -34,11 +34,13 @@ def main() -> int:
         cmds: list[list[str]] = [
             ["python", "-m", "ruff", "format", "."],
             ["python", "-m", "ruff", "check", ".", "--fix"],
+            ["python", "-m", "ty", "check"],  # 沒有修復模式。
         ]
     else:
         cmds = [
             ["python", "-m", "ruff", "format", "--check", "."],
             ["python", "-m", "ruff", "check", "."],
+            ["python", "-m", "ty", "check"],
         ]
 
     # Run commands sequentially; fail fast on any non-zero exit code

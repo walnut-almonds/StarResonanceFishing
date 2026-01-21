@@ -11,8 +11,6 @@ import numpy as np
 import pyautogui
 import pytesseract
 
-pytesseract.pytesseract.tesseract_cmd = r"D:\Tesseract-OCR\tesseract.exe"
-
 
 class ImageDetector:
     """圖像檢測器"""
@@ -29,7 +27,7 @@ class ImageDetector:
 
     def capture_screen(
         self, region: Optional[Tuple[int, int, int, int]] = None
-    ) -> np.ndarray:
+    ) -> Optional[np.ndarray]:
         """
         截取螢幕
 
@@ -37,7 +35,7 @@ class ImageDetector:
             region: 截取區域 (x, y, width, height)
 
         Returns:
-            截圖的 numpy 陣列
+            截圖的 numpy 陣列，失敗時返回 None
         """
         try:
             screenshot = pyautogui.screenshot(region=region)
@@ -48,7 +46,7 @@ class ImageDetector:
 
     def find_template(
         self,
-        screen: np.ndarray,
+        screen: Optional[np.ndarray],
         template_path: str,
         threshold: Optional[float] = None,
     ) -> Optional[Tuple[int, int]]:
@@ -311,7 +309,9 @@ class ImageDetector:
             if not valid_contours:
                 return None
 
-            largest_contour = max(valid_contours, key=cv2.contourArea)
+            largest_contour = max(
+                valid_contours, key=lambda c: cv2.contourArea(c)
+            )
 
             # 計算輪廓的中心點
             M = cv2.moments(largest_contour)
@@ -335,7 +335,9 @@ class ImageDetector:
             self.logger.error(f"白色水花檢測失敗: {e}")
             return None
 
-    def _detect_tension_by_ocr(self, region: Tuple[int, int, int, int]) -> int:
+    def _detect_tension_by_ocr(
+        self, region: Tuple[int, int, int, int]
+    ) -> Optional[int]:
         """
         使用 OCR 識別張力表上的數字（0-100）
 
