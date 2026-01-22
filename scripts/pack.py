@@ -51,7 +51,7 @@ def generate_version(version=None):
     print("生成 VERSION 文件")
     print("=" * 50)
 
-    cmd = ["python", "scripts/generate_version.py"]
+    cmd = [sys.executable, "scripts/generate_version.py"]
     if version:
         cmd.extend(["--version", version])
 
@@ -69,7 +69,7 @@ def check():
     print("檢查代碼")
     print("=" * 50)
 
-    result = run(["python", "scripts/check.py"])
+    result = run([sys.executable, "scripts/check.py"])
     if result != 0:
         print(
             "❌ 代碼檢查未通過，請先修復問題，透過 `python scripts/check.py --fix` 嘗試自動修復"
@@ -87,7 +87,7 @@ def pack_exe():
 
     result = run(
         [
-            "python",
+            sys.executable,
             "-m",
             "PyInstaller",
             "StarResonanceFishing.spec",

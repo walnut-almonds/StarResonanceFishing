@@ -10,6 +10,7 @@
 """
 
 import argparse
+import sys
 from subprocess import check_call
 
 
@@ -32,13 +33,15 @@ def main() -> int:
     # Prepare command sequence
     if args.fix:
         cmds: list[list[str]] = [
-            ["python", "-m", "ruff", "format", "."],
-            ["python", "-m", "ruff", "check", ".", "--fix"],
+            [sys.executable, "-m", "ruff", "format", "."],
+            [sys.executable, "-m", "ruff", "check", ".", "--fix"],
+            [sys.executable, "-m", "ty", "check"],  # 沒有修復模式。
         ]
     else:
         cmds = [
-            ["python", "-m", "ruff", "format", "--check", "."],
-            ["python", "-m", "ruff", "check", "."],
+            [sys.executable, "-m", "ruff", "format", "--check", "."],
+            [sys.executable, "-m", "ruff", "check", "."],
+            [sys.executable, "-m", "ty", "check"],
         ]
 
     # Run commands sequentially; fail fast on any non-zero exit code

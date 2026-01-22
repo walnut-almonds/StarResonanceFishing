@@ -5,9 +5,12 @@
 import logging
 import sys
 from pathlib import Path
+from typing import Optional
 
 
-def setup_logger(level: str = "INFO", log_file: str = None) -> logging.Logger:
+def setup_logger(
+    level: str = "INFO", log_file: Optional[str] = None
+) -> logging.Logger:
     """
     設置日誌紀錄器
 

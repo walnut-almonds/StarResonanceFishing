@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-windows:
-    runs-on: windows-latest
+    runs-on: windows-latest # https://github.com/actions/runner-images Architecture: x64
     permissions:
       contents: write
 
@@ -17,20 +17,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.14'
-        architecture: 'x64'
+    - name: Install uv
+      uses: astral-sh/setup-uv@v7
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements-dev.txt
+    - name: Setup project
+      run: uv sync
 
     - name: Build with pack.py
       run: |
-        python scripts/pack.py
+        uv run python scripts/pack.py
       env:
         PYTHONIOENCODING: utf-8
 

@@ -16,6 +16,7 @@ from ctypes import (
     c_ushort,
     sizeof,
     windll,
+    wintypes,
 )
 from typing import Tuple
 
@@ -450,6 +451,6 @@ class WinAPIInputController:
         Returns:
             (x, y) 座標
         """
-        point = ctypes.wintypes.POINT()
+        point = wintypes.POINT()
         self.GetCursorPos(ctypes.byref(point))
         return point.x, point.y
