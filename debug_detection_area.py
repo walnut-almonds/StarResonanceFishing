@@ -20,7 +20,7 @@ def load_config():
         print("錯誤: 找不到 config.yaml 檔案")
         sys.exit(1)
 
-    with open(config_path, "r", encoding="utf-8") as f:
+    with open(config_path, encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 

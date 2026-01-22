@@ -41,7 +41,7 @@ class ConfigManager:
         if not self.config_path.exists():
             raise FileNotFoundError(f"配置檔案不存在: {self.config_path}")
 
-        with open(self.config_path, "r", encoding="utf-8") as f:
+        with open(self.config_path, encoding="utf-8") as f:
             return yaml.safe_load(f)
 
     def get(self, key: str, default=None):

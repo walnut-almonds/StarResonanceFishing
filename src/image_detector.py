@@ -4,7 +4,6 @@
 
 import logging
 from pathlib import Path
-from typing import Optional, Tuple
 
 import cv2
 import numpy as np
@@ -26,8 +25,8 @@ class ImageDetector:
         self.logger = logging.getLogger("FishingBot.ImageDetector")
 
     def capture_screen(
-        self, region: Optional[Tuple[int, int, int, int]] = None
-    ) -> Optional[np.ndarray]:
+        self, region: tuple[int, int, int, int] | None = None
+    ) -> np.ndarray | None:
         """
         截取螢幕
 
@@ -46,10 +45,10 @@ class ImageDetector:
 
     def find_template(
         self,
-        screen: Optional[np.ndarray],
+        screen: np.ndarray | None,
         template_path: str,
-        threshold: Optional[float] = None,
-    ) -> Optional[Tuple[int, int]]:
+        threshold: float | None = None,
+    ) -> tuple[int, int] | None:
         """
         在螢幕截圖中查找模板圖像
 
@@ -165,8 +164,8 @@ class ImageDetector:
 
     def detect_color_change(
         self,
-        region: Tuple[int, int, int, int],
-        target_color: Tuple[int, int, int],
+        region: tuple[int, int, int, int],
+        target_color: tuple[int, int, int],
         tolerance: int = 30,
     ) -> bool:
         """
@@ -204,9 +203,9 @@ class ImageDetector:
 
     def detect_color_in_range(
         self,
-        region: Tuple[int, int, int, int],
-        color_min: Tuple[int, int, int],
-        color_max: Tuple[int, int, int],
+        region: tuple[int, int, int, int],
+        color_min: tuple[int, int, int],
+        color_max: tuple[int, int, int],
         min_pixel_ratio: float = 0.01,
     ) -> bool:
         """
@@ -250,7 +249,7 @@ class ImageDetector:
             return False
 
     def save_screenshot(
-        self, filename: str, region: Optional[Tuple[int, int, int, int]] = None
+        self, filename: str, region: tuple[int, int, int, int] | None = None
     ):
         """
         保存截圖（用於測試）
@@ -266,10 +265,10 @@ class ImageDetector:
 
     def find_white_splash(
         self,
-        region: Tuple[int, int, int, int],
+        region: tuple[int, int, int, int],
         white_threshold: int = 200,
         min_area: int = 50,
-    ) -> Optional[Tuple[int, int]]:
+    ) -> tuple[int, int] | None:
         """
         檢測白色水花的位置
 
@@ -336,8 +335,8 @@ class ImageDetector:
             return None
 
     def _detect_tension_by_ocr(
-        self, region: Tuple[int, int, int, int]
-    ) -> Optional[int]:
+        self, region: tuple[int, int, int, int]
+    ) -> int | None:
         """
         使用 OCR 識別張力表上的數字（0-100）
 

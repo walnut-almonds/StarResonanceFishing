@@ -3,7 +3,6 @@
 """
 
 import logging
-from typing import Optional, Tuple
 
 import pygetwindow as gw
 
@@ -65,7 +64,7 @@ class WindowManager:
             self.logger.error(f"激活視窗時出錯: {e}")
             return False
 
-    def get_window_rect(self) -> Optional[Tuple[int, int, int, int]]:
+    def get_window_rect(self) -> tuple[int, int, int, int] | None:
         """
         獲取視窗位置和大小
 

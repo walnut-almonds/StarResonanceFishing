@@ -5,7 +5,6 @@
 import logging
 import threading
 import time
-from typing import Optional
 
 from src.config_manager import ConfigManager
 from src.image_detector import ImageDetector
@@ -405,7 +404,7 @@ class TensionPhase:
                 self.input_controller.key_up(right_key)
                 self.logger.info(f"釋放 {right_key} 鍵")
 
-    def _detect_red_tension_color(self) -> Optional[int]:
+    def _detect_red_tension_color(self) -> int | None:
         """取得拉力計中紅色區域的比例，失敗時回傳 None"""
         window_rect = self.window_manager.get_window_rect()
         if not window_rect:

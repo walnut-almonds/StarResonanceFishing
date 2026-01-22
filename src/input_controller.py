@@ -5,7 +5,6 @@
 import logging
 import random
 import time
-from typing import Tuple
 
 import pyautogui
 
@@ -125,7 +124,7 @@ class InputController:
         except Exception as e:
             self.logger.error(f"滑鼠移動失敗: {e}")
 
-    def get_mouse_position(self) -> Tuple[int, int]:
+    def get_mouse_position(self) -> tuple[int, int]:
         """
         取得當前滑鼠位置
 

@@ -18,7 +18,6 @@ from ctypes import (
     windll,
     wintypes,
 )
-from typing import Tuple
 
 # Windows API 常量
 INPUT_MOUSE = 0
@@ -444,7 +443,7 @@ class WinAPIInputController:
         except Exception as e:
             self.logger.error(f"滑鼠釋放失敗: {e}")
 
-    def get_mouse_position(self) -> Tuple[int, int]:
+    def get_mouse_position(self) -> tuple[int, int]:
         """
         獲取當前滑鼠位置
 
