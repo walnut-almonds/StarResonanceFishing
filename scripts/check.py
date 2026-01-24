@@ -10,50 +10,49 @@
 """
 
 import argparse
+import subprocess
 import sys
-from subprocess import check_call
 
 
-def run(cmd: list[str]) -> int:
+def run(cmd: list[str]):
     print(">>", " ".join(cmd))
-    return check_call(cmd, shell=True)
+    subprocess.run(args=cmd, check=True)
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="執行代碼檢查工具",
-    )
-    parser.add_argument(
-        "--fix",
-        action="store_true",
-        help="執行修復操作",
-    )
-    args = parser.parse_args()
+def abort(*values: object):
+    """打印錯誤訊息並退出"""
+    print(*values, file=sys.stderr)
+    sys.exit(1)
 
-    # Prepare command sequence
-    if args.fix:
-        cmds: list[list[str]] = [
-            [sys.executable, "-m", "ruff", "format", "."],
-            [sys.executable, "-m", "ruff", "check", ".", "--fix"],
-            [sys.executable, "-m", "ty", "check"],  # 沒有修復模式。
-        ]
-    else:
-        cmds = [
-            [sys.executable, "-m", "ruff", "format", "--check", "."],
-            [sys.executable, "-m", "ruff", "check", "."],
-            [sys.executable, "-m", "ty", "check"],
-        ]
 
-    # Run commands sequentially; fail fast on any non-zero exit code
-    for cmd in cmds:
-        rc = run(cmd)
-        if rc != 0:
-            print(f"❌ command '{' '.join(cmd)}' failed with code {rc}")
-            return rc
+def main():
+    try:
+        parser = argparse.ArgumentParser(description="執行代碼檢查工具")
+        parser.add_argument("--fix", action="store_true", help="執行修復操作")
+        args = parser.parse_args()
 
-    print("\n✅ All checks passed.")
-    return 0
+        # Prepare command sequence
+        if args.fix:
+            cmds = [
+                [sys.executable, "-m", "ruff", "format"],
+                [sys.executable, "-m", "ruff", "check", "--fix"],
+                [sys.executable, "-m", "ty", "check"],  # 沒有修復模式。
+            ]
+        else:
+            cmds = [
+                [sys.executable, "-m", "ruff", "format", "--check"],
+                [sys.executable, "-m", "ruff", "check"],
+                [sys.executable, "-m", "ty", "check"],
+            ]
+
+        for cmd in cmds:
+            run(cmd)
+
+        print("\n代碼檢查通過")
+
+    except Exception as e:
+        abort(f"\n代碼檢查發生錯誤: {e}")
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()
