@@ -6,32 +6,16 @@
 
 import sys
 import time
-from pathlib import Path
 
+from src import __version__
 from src.config_manager import ConfigManager
 from src.fishing_bot import FishingBot
 from src.logger import setup_logger
 
 
-def get_version() -> str:
-    """取得版本號，優先讀取 VERSION 檔，找不到時回退到套件版本。"""
-    version_file = Path(__file__).parent / "VERSION"
-
-    try:
-        return version_file.read_text(encoding="utf-8").strip()
-    except FileNotFoundError:
-        pass
-
-    try:
-        from src import __version__
-
-        return __version__
-    except Exception:
-        return "unknown"
-
-
 def main():
     """主函數"""
+
     config = ConfigManager("config.yaml")
 
     logger = setup_logger(
@@ -39,11 +23,9 @@ def main():
         config.get("logging.file", "fishing_bot.log"),
     )
 
-    version = get_version()
-
     logger.info("=" * 50)
-    logger.info(f"釣魚機器人 {version}")
-    logger.info("Python version: " + sys.version)
+    logger.info(f"釣魚機器人 {__version__}")
+    logger.info(f"Python {sys.version}")
     logger.info("=" * 50)
     logger.info("釣魚機器人啟動")
     logger.info("=" * 50)

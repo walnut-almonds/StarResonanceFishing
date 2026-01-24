@@ -379,8 +379,8 @@ wheels = [
 ]
 
 [[package]]
-name = "starresonancefishing"
-source = { virtual = "." }
+name = "star-resonance-fishing"
+source = { editable = "." }
 dependencies = [
     { name = "numpy" },
     { name = "opencv-python" },

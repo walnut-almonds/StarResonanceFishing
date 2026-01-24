@@ -7,10 +7,8 @@
 
 使用方式：
     python scripts/pack.py                    # 基本打包
-    python scripts/pack.py --version 1.0.0    # 指定版本號
 """
 
-import argparse
 import shutil
 import sys
 from pathlib import Path
@@ -29,7 +27,7 @@ def clean_build():
     print("=" * 50)
 
     dirs_to_clean = ["build", "dist", "__pycache__"]
-    files_to_clean = ["VERSION"]
+    files_to_clean = []
 
     for dir_name in dirs_to_clean:
         dir_path = Path(dir_name)
@@ -41,24 +39,6 @@ def clean_build():
         for file_path in Path(".").glob(pattern):
             print(f"刪除 {file_path} ...")
             file_path.unlink()
-
-    return True
-
-
-def generate_version(version=None):
-    """生成 VERSION 文件"""
-    print("=" * 50)
-    print("生成 VERSION 文件")
-    print("=" * 50)
-
-    cmd = [sys.executable, "scripts/generate_version.py"]
-    if version:
-        cmd.extend(["--version", version])
-
-    result = run(cmd)
-    if result != 0:
-        print("❌ 生成 VERSION 文件失敗")
-        return False
 
     return True
 
@@ -101,17 +81,9 @@ def pack_exe():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="自動化打包腳本")
-    parser.add_argument("--version", help="指定版本號")
-    args = parser.parse_args()
-
     try:
         # 清理舊的打包文件
         if not clean_build():
-            sys.exit(1)
-
-        # 生成版本
-        if not generate_version(args.version):
             sys.exit(1)
 
         # 代碼檢查

@@ -28,9 +28,6 @@ ENV/
 # 日誌檔案
 *.log
 
-# 版本文件（由 CI/CD 自動生成）
-VERSION
-
 # IDE
 .idea/
 *.swp

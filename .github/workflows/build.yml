@@ -35,7 +35,6 @@ jobs:
         mkdir release\templates
         copy dist\StarResonanceFishing.exe release\
         copy templates\* release\templates\
-        copy VERSION release\
         copy config.yaml release\
         copy README.md release\
 

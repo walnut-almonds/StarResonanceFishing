@@ -22,7 +22,6 @@
 StarResonanceFishing/
 ├── scripts/                         # 各種腳本
 │   ├── check.py                     # 代碼檢查腳本（使用 Ruff）
-│   ├── generate_version.py          # 版本檔案生成腳本
 │   └── pack.py                      # 打包腳本（PyInstaller）
 ├── src/                             # 源代碼目錄
 │   ├── __init__.py                  # 模組初始化
@@ -53,7 +52,6 @@ StarResonanceFishing/
 ├── main.py                          # 主程式入口
 ├── debug_detection_area.py          # 測試檢測區域的調試工具
 ├── get_window_title.py              # 獲取視窗標題的工具
-├── VERSION                          # 版本號碼
 └── README.md                        # 說明檔案
 ```
 
@@ -128,12 +126,6 @@ python debug_detection_area.py
 python scripts/check.py
 ```
 使用 Ruff 進行代碼格式檢查和 linting。
-
-#### 生成版本號
-```bash
-python scripts/generate_version.py
-```
-從 Git 標籤或提交生成版本號。
 
 #### 打包成執行檔
 ```bash
