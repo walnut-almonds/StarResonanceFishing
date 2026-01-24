@@ -12,15 +12,11 @@
 import shutil
 import sys
 from pathlib import Path
-from subprocess import check_call
+
+from util import abort, run
 
 
-def run(cmd: list[str]) -> int:
-    print(">>", " ".join(cmd))
-    return check_call(cmd, shell=True)
-
-
-def clean_build():
+def clean():
     """清理舊的打包文件"""
     print("=" * 50)
     print("清理舊的打包文件")
@@ -40,8 +36,6 @@ def clean_build():
             print(f"刪除 {file_path} ...")
             file_path.unlink()
 
-    return True
-
 
 def check():
     """檢查代碼"""
@@ -49,50 +43,25 @@ def check():
     print("檢查代碼")
     print("=" * 50)
 
-    result = run([sys.executable, "scripts/check.py"])
-    if result != 0:
-        print(
-            "❌ 代碼檢查未通過，請先修復問題，透過 `python scripts/check.py --fix` 嘗試自動修復"
-        )
-        return False
-
-    return True
+    run([sys.executable, "scripts/check.py"])
 
 
-def pack_exe():
+def pack():
     """使用 PyInstaller 打包"""
     print("=" * 50)
     print("使用 PyInstaller 打包")
     print("=" * 50)
 
-    result = run(
-        [
-            sys.executable,
-            "-m",
-            "PyInstaller",
-            "StarResonanceFishing.spec",
-        ]
-    )
-    if result != 0:
-        print("❌ 打包失敗")
-        return False
-
-    return True
+    run([sys.executable, "-m", "PyInstaller", "StarResonanceFishing.spec"])
 
 
 def main():
     try:
-        # 清理舊的打包文件
-        if not clean_build():
-            sys.exit(1)
+        clean()  # 清理舊的打包文件
 
-        # 代碼檢查
-        if not check():
-            sys.exit(1)
+        check()  # 代碼檢查
 
-        # 打包
-        if not pack_exe():
-            sys.exit(1)
+        pack()  # 打包
 
         # 打包成功
         print("=" * 50)
@@ -103,11 +72,10 @@ def main():
         )
 
     except KeyboardInterrupt:
-        print("\n\n用戶中斷打包")
-        sys.exit(1)
+        abort("\n用戶中斷打包")
+
     except Exception as e:
-        print(f"\n❌ 打包過程發生錯誤: {e}")
-        sys.exit(1)
+        abort(f"\n打包過程發生錯誤: {e}")
 
 
 if __name__ == "__main__":
