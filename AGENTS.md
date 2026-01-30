@@ -11,7 +11,7 @@ Star Resonance Fishing is an automated fishing bot for game automation. It uses 
 - Python 3.14+ (managed by uv)
 - OpenCV for computer vision
 - PyYAML for configuration
-- WinAPI for input control
+- PyAutoGUI and WinAPI for input control (via an input controller abstraction)
 
 ## Setup
 
@@ -21,8 +21,8 @@ Star Resonance Fishing is an automated fishing bot for game automation. It uses 
 ### Environment Setup
 - Python 3.14+ is automatically managed by uv
 - Verify environment: `uv run python --version`
-- All development must occur within the virtual environment (never use system Python)
-- See [uv documentation](https://docs.astral.sh/uv/) for complete usage instructions
+- Prefer using the uv-managed virtual environment for development; if you use a pip-based workflow (as documented in the README or scripts), ensure it runs inside a virtual environment and not against bare system Python
+- See [uv documentation](https://docs.astral.sh/uv/) for complete usage instructions and workflow details
 
 ### Initial Setup
 ```bash
@@ -37,13 +37,13 @@ uv sync
 ## Build and Test Commands
 
 ### Development Workflow
-- Run checks: `uv run scripts/check.py`
-- Fix issues automatically: `uv run scripts/check.py --fix`
-- Package executable: `uv run scripts/pack.py`
-- Run application: `uv run main.py`
+- Run checks: `uv run python scripts/check.py`
+- Fix issues automatically: `uv run python scripts/check.py --fix`
+- Package executable: `uv run python scripts/pack.py`
+- Run application: `uv run python main.py`
 
 ### Testing
-- The agent should run `uv run scripts/check.py` before committing to ensure code quality
+- The agent should run `uv run python scripts/check.py` before committing to ensure code quality
 - Fix any issues reported by the check script
 - Verify the application starts without errors
 
@@ -57,13 +57,16 @@ uv sync
 
 ## Project Structure
 
-- `src/` - Main application source code
+- `src/` - Main application source code (key modules include, but are not limited to:)
   - `phases/` - Game phase implementations (casting, tension, waiting, completion, preparation)
   - `fishing_bot.py` - Core bot orchestration
   - `image_detector.py` - Computer vision detection logic
-  - `input_controller.py` - Input simulation abstraction
+  - `input_controller.py` - Input simulation abstraction (PyAutoGUI-based)
+  - `input_controller_winapi.py` - Windows-specific input control implementation
   - `window_manager.py` - Window detection and management
   - `config_manager.py` - Configuration handling
+  - `logger.py` - Centralized logging utilities
+  - `utils.py` - Shared helper and utility functions
 - `scripts/` - Development utilities (check.py, pack.py)
 - `config.yaml` - Application configuration file
 - `requirements.txt` - Production dependencies
@@ -80,8 +83,8 @@ uv sync
 ## Before Committing
 
 ### Pre-commit Checklist
-- Run full check suite: `uv run scripts/check.py --fix`
-- Verify application starts: `uv run main.py --help` (or integration test if available)
+- Run full check suite: `uv run python scripts/check.py --fix`
+- Verify application starts: `uv run python main.py --help` (or integration test if available)
 - Update `AGENTS.md` if adding new tools, commands, or conventions
 
 ### Commit Message Format
